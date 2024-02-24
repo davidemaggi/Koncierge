@@ -1,0 +1,23 @@
+{
+  "profiles": {
+    "Koncierge.Cli": {
+      "commandName": "Project"
+    },
+    "Koncierge info": {
+      "commandName": "Project",
+      "commandLineArgs": "info"
+    },
+    "Koncierge -h": {
+      "commandName": "Project",
+      "commandLineArgs": "-h"
+    },
+    "Koncierge config get": {
+      "commandName": "Project",
+      "commandLineArgs": "config get"
+    },
+    "Koncierge config get --dry": {
+      "commandName": "Project",
+      "commandLineArgs": "config get --dry"
+    }
+  }
+}
