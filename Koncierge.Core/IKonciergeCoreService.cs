@@ -1,4 +1,4 @@
-﻿using Koncierge.Models.Config;
+﻿using Koncierge.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;

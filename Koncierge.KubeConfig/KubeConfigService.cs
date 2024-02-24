@@ -1,7 +1,7 @@
 ﻿using k8s;
 using k8s.KubeConfigModels;
 using Koncierge.Exceptions;
-using Koncierge.Models.Config;
+using Koncierge.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -9,29 +9,32 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using YamlDotNet.Serialization.NamingConventions;
+using static Koncierge.Models.Enums;
 
 namespace Koncierge.KubeConfig
 {
-    public class KubeConfigService: IKubeConfigService
+    public class KubeConfigService : IKubeConfigService
     {
 
-        private string _defaultConfig ="config";
+        private string _defaultConfig = "config";
         public string kubePath;
 
 
 
-        public KubeConfigService() {
+        public KubeConfigService()
+        {
 
 
             kubePath = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".kube");
 
-           
+
 
         }
 
         public string GetKubeConfigDefaultPath() => kubePath;
 
-        public async Task<List<KubeConfigFile>> GetKubeConfigFromPath() {
+        public async Task<List<KubeConfigFile>> GetKubeConfigFromPath()
+        {
 
             return await GetKubeConfigFromPath(kubePath);
 
@@ -43,7 +46,8 @@ namespace Koncierge.KubeConfig
 
             foreach (string filePath in Directory.EnumerateFiles(p, "*.*", SearchOption.AllDirectories))
             {
-                try {
+                try
+                {
 
                     var deserializer = new YamlDotNet.Serialization.DeserializerBuilder()
            .WithNamingConvention(CamelCaseNamingConvention.Instance)
@@ -54,10 +58,11 @@ namespace Koncierge.KubeConfig
 
                     var config = KubernetesClientConfiguration.BuildConfigFromConfigFile(filePath);
 
-                    ret.Add(new KubeConfigFile(Path.GetFileName(filePath),filePath));
+                    ret.Add(new KubeConfigFile(Path.GetFileName(filePath), filePath));
 
                 }
-                catch {
+                catch
+                {
 
 
                 }
@@ -72,5 +77,38 @@ namespace Koncierge.KubeConfig
         }
 
 
+        public KubeConfigFileStatus CheckKubeConfig(KubeConfigFile toCheck)
+        {
+
+
+            if (!File.Exists(toCheck.Path))
+            {
+                return KubeConfigFileStatus.MISSING;
+            }
+
+            try
+            {
+
+                var deserializer = new YamlDotNet.Serialization.DeserializerBuilder()
+       .WithNamingConvention(CamelCaseNamingConvention.Instance)
+       .IgnoreUnmatchedProperties()
+       .Build();
+
+                K8SConfiguration kubeconfig = deserializer.Deserialize<K8SConfiguration>(File.ReadAllText(toCheck.Path));
+
+                var config = KubernetesClientConfiguration.BuildConfigFromConfigFile(toCheck.Path);
+
+
+
+
+            }
+            catch
+            {
+                return KubeConfigFileStatus.INVALID;
+
+            }
+
+            return KubeConfigFileStatus.OK;
+        }
     }
 }

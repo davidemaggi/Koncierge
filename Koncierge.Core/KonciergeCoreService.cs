@@ -1,4 +1,5 @@
-﻿using Koncierge.KubeConfig;
+﻿using Koncierge.Database;
+using Koncierge.KubeConfig;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,11 +11,12 @@ namespace Koncierge.Core
     public partial class KonciergeCoreService: IKonciergeCoreService
     {
         private readonly IKubeConfigService _kubeConfig;
+        private readonly IKonciergeDbService _konciergeDbService;
 
-        public KonciergeCoreService() {
+        public KonciergeCoreService(IKonciergeDbService kdbs) {
 
             _kubeConfig=new KubeConfigService();
-
+            _konciergeDbService = kdbs;
 
 
         }

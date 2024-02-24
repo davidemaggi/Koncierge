@@ -1,4 +1,5 @@
-﻿using LiteDB;
+﻿using Koncierge.Database.Repositories;
+using LiteDB;
 using System.IO;
 
 namespace Koncierge.Database
@@ -9,6 +10,13 @@ namespace Koncierge.Database
         private readonly LiteDatabase _db;
         private string _dbPath;
         private string _key;
+        private  IKubeConfigFileRepository _kubeConfigFileRepository;
+        private bool _disposed;
+
+
+        
+
+
 
         public KonciergeDbService() {
 
@@ -18,6 +26,7 @@ namespace Koncierge.Database
         }
 
 
+        
 
 
 
@@ -44,6 +53,33 @@ namespace Koncierge.Database
 
 
         }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (!_disposed)
+            {
+                if (disposing)
+                {
+                    if (_db != null)
+                        _db.Dispose();
+                }
+                _disposed = true;
+            }
+        }
+
+        ~KonciergeDbService()
+        {
+            Dispose(false);
+        }
+
+        public IKubeConfigFileRepository KubeConfigFileRepository() => _kubeConfigFileRepository ??= new KubeConfigFileRepository(_db);
+
 
 
     }

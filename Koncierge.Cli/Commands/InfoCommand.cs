@@ -22,6 +22,11 @@ namespace Koncierge.Cli.Commands
 
         public override async Task<int> ExecuteAsync(CommandContext context, Commands.InfoCommandSettings settings)
         {
+            AnsiConsole.Write(
+    new FigletText("Koncierge")
+        .LeftJustified()
+        .Color(Color.DarkCyan));
+
             Emoji.Remap("big_hearth", "❤️");
 
             var rule = new Rule("Made with :big_hearth: in [default on green] [/][default on white] [/][default on red] [/]");

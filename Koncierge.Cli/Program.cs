@@ -2,7 +2,7 @@
 using Koncierge.Cli.Commands.KubeConfig;
 using Koncierge.Cli.Infrastructure;
 using Koncierge.Core;
-
+using Koncierge.Database;
 using Microsoft.Extensions.DependencyInjection;
 using Spectre.Console;
 using Spectre.Console.Cli;
@@ -92,7 +92,7 @@ namespace Koncierge.Cli
         public static void ConfigureServices(IServiceCollection services)
         {
 
-
+            services.AddSingleton<IKonciergeDbService, KonciergeDbService>();
             services.AddSingleton<IKonciergeCoreService, KonciergeCoreService>();
             var registrar = new TypeRegistrar(services);
 

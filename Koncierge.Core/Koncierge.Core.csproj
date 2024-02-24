@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Koncierge.Database\Koncierge.Database.csproj" />
     <ProjectReference Include="..\Koncierge.KubeConfig\Koncierge.KubeConfig.csproj" />
   </ItemGroup>
 

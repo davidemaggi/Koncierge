@@ -1,4 +1,5 @@
-﻿using Koncierge.Models.Config;
+﻿using Koncierge.Models;
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -16,7 +17,7 @@ namespace Koncierge.Core
             
             var configs= await _kubeConfig.GetKubeConfigFromPath();
 
-            if (!dry) { SaveConfigs(configs); }
+            if (!dry) { return SaveConfigs(configs); }
 
             return configs;
         }
@@ -36,8 +37,18 @@ namespace Koncierge.Core
 
         private List<KubeConfigFile> SaveConfigs(List<KubeConfigFile> configs) {
 
+            foreach (var config in configs)
+            {
 
-            return configs;
+                _konciergeDbService.KubeConfigFileRepository().AddOrUpdate(config);
+
+
+            }
+            var ret=_konciergeDbService.KubeConfigFileRepository().All().ToList();
+
+            _konciergeDbService.KubeConfigFileRepository().ClearJustAdded();
+
+            return ret;
         }
 
 

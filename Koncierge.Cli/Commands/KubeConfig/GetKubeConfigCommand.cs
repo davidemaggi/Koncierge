@@ -1,6 +1,6 @@
 ﻿using Koncierge.Cli.Commands.KubeConfig;
 using Koncierge.Core;
-using Koncierge.Models.Config;
+using Koncierge.Models;
 using Spectre.Console;
 using Spectre.Console.Cli;
 using System;
@@ -49,13 +49,15 @@ namespace Koncierge.Cli.Commands.KubeConfig
                 
         }
       });
-                if (list.Count > 0)
+
+            var newFinding = list.Where(x => x.JustAdded).Count();
+                if (newFinding > 0)
         {
-            AnsiConsole.MarkupLine($":party_popper: [bold]{list.Count}[/] files have been found");
+            AnsiConsole.MarkupLine($":party_popper: [bold]{newFinding}[/] file(s) have been found");
         }
         else
         {
-            AnsiConsole.MarkupLine($":crying_face: no files have been found");
+            AnsiConsole.MarkupLine($":crying_face: no new KubeConfig have been found");
         }
 
         
@@ -70,12 +72,18 @@ namespace Koncierge.Cli.Commands.KubeConfig
 
         foreach (var item in list)
         {
-
-            table.AddRow(item.Status.ToString(), item.Name, item.Path);
-
+                if (item.JustAdded)
+                {
+                    table.AddRow($"[green]{item.Status.ToString()}[/]", $"[green]{item.Name}[/]", $"[green]{item.Path}[/]");
+                }
+                else {
+                    table.AddRow(item.Status.ToString(), item.Name, item.Path);
+                }
 
         }
 
+            
+            AnsiConsole.MarkupLine($"Koncierge now is aware of these {list.Count} KubeConfig");
             AnsiConsole.MarkupLine("");
 
             AnsiConsole.Write(table);
