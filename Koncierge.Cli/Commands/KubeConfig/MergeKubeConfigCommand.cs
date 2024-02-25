@@ -37,8 +37,9 @@ namespace Koncierge.Cli.Commands.KubeConfig
         public override async Task<int> ExecuteAsync(CommandContext context, MergeKubeConfigSettings settings)
         {
 
-            KubeConfigFile sourceFile;
-            KubeConfigFile targetFile;
+           
+            KubeConfigFile sourcetFile= new KubeConfigFile();
+            KubeConfigFile targetFile = new KubeConfigFile();
 
             var list = new List<KubeConfigFile>();
             await AnsiConsole.Status()
@@ -55,7 +56,7 @@ namespace Koncierge.Cli.Commands.KubeConfig
             {
                 throw KubeConfigNotValidException.WithKcf(settings.inputSourcePath);
             }
-
+            sourcetFile = await _konciergeCore.GetKubeConfigFileFromPath(settings.inputSourcePath);
 
 
             if (settings.inputTargetPath is null)
@@ -80,7 +81,9 @@ namespace Koncierge.Cli.Commands.KubeConfig
         .MoreChoicesText("[grey](Move up and down to reveal more Configs)[/]")
         .AddChoices(strToMerge));
 
-                targetFile = list.Where(x => x.Path == strSelect).FirstOrDefault();
+                _helper.WriteSelect(strSelect);
+
+                targetFile = list.Where(x => x.Path == getIdFromSelection(strSelect)).FirstOrDefault();
 
             } 
 
@@ -93,7 +96,13 @@ namespace Koncierge.Cli.Commands.KubeConfig
 
                 if (targetFile is null)
                 {
-                    throw KubeConfigNotFountException.WithKcf(settings.inputTargetPath);
+                    targetFile=await _konciergeCore.GetKubeConfigFileFromPath(settings.inputTargetPath);
+
+                    if (targetFile is null)
+                    {
+                        throw KubeConfigNotFountException.WithKcf(settings.inputTargetPath);
+                    }
+
                 }
 
 
@@ -102,10 +111,66 @@ namespace Koncierge.Cli.Commands.KubeConfig
 
 
            
+        MergeResult merged = new MergeResult();
+
+                 await AnsiConsole.Status()
+   .StartAsync("[bold]Merging KubeConfig Files[/]", async ctx =>
+   {
+       merged = await _konciergeCore.MergeKubeConfig(sourcetFile.Path, targetFile.Path);
+   });
+
+
+            if (merged.DoneSomething()) { 
+
+                var root = new Tree("");
+
+                // Add some nodes
+                var outAdded = root.AddNode("[green]Added[/]");
+
+                foreach (var item in merged.Added)
+                {
+                    var tmp = outAdded.AddNode(item);
+                }
+
+
+                var outEdit = root.AddNode("[yellow]Modified[/]");
+                foreach (var item in merged.Modified)
+                {
+                    var tmp = outEdit.AddNode(item);
+                }
+                var outDeleted = root.AddNode("[red]Deleted[/]");
+
+                foreach (var item in merged.Deleted)
+                {
+                    var tmp = outDeleted.AddNode(item);
+                }
+
+                // Render the tree
+                AnsiConsole.Write(root);
 
 
 
-            
+
+
+
+                if (AnsiConsole.Confirm("Confirm Merge?"))
+                {
+                    _konciergeCore.SaveKubeConfig(targetFile.Path, merged.Merged, true);
+                }
+                else
+                {
+                    _helper.WriteWarning("Merging Aborted");
+                }
+
+
+
+
+            _helper.WriteSuccess("Merging Completed");
+
+            }else { 
+            _helper.WriteInfo("Nothing to do in this merge.");
+
+            }
 
 
 
@@ -113,7 +178,17 @@ namespace Koncierge.Cli.Commands.KubeConfig
         }
 
 
+        public string getIdFromSelection(string str)
+        {
 
+
+            str = str.Replace(" ", "");
+            var x = str.Split('@');
+
+            return x[1];
+
+
+        }
 
     }
 }

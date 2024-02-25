@@ -6,6 +6,10 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using YamlDotNet.Serialization.NamingConventions;
+using YamlDotNet.Serialization;
+using Koncierge.Exceptions;
+using k8s.KubeConfigModels;
 
 namespace Koncierge.Core
 {
@@ -66,6 +70,21 @@ namespace Koncierge.Core
         public async Task<bool> IsValidKubeConfig(string path)
         {
             return   _kubeConfig.IsValidKubeConfig(path);
+        }
+
+        public async Task<MergeResult> MergeKubeConfig(string from, string to)
+        {
+            return _kubeConfig.MergeKubeConfig(from,to);
+        }
+        public async Task<KubeConfigFile> GetKubeConfigFileFromPath(string path)
+        {
+            return await _kubeConfig.GetKubeConfigFileFromPath(path);
+        }
+
+        public Task SaveKubeConfig(string path, K8SConfiguration config, bool backup = true)
+        {
+            return _kubeConfig.SaveKubeConfig(path, config, backup);
+
         }
 
     }

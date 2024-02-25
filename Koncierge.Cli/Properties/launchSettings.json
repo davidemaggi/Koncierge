@@ -9,7 +9,7 @@
     },
     "Koncierge Specific Command": {
       "commandName": "Project",
-      "commandLineArgs": "config ls"
+      "commandLineArgs": "config merge -s \"C:\\Users\\Davide\\merge\""
     }
   }
 }

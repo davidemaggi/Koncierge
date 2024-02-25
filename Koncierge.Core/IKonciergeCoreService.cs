@@ -1,4 +1,5 @@
-﻿using Koncierge.Models;
+﻿using k8s.KubeConfigModels;
+using Koncierge.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,10 @@ namespace Koncierge.Core
 
         public Task<bool> IsValidKubeConfig(string path);
 
+        public Task<MergeResult> MergeKubeConfig(string from, string to);
+        public Task<KubeConfigFile> GetKubeConfigFileFromPath(string path);
+
+        public Task SaveKubeConfig(string path, K8SConfiguration config, bool backup = true);
 
     }
 }

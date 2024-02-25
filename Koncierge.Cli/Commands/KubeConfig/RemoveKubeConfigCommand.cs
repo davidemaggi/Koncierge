@@ -105,6 +105,9 @@ namespace Koncierge.Cli.Commands.KubeConfig
             }
             else {
 
+                _helper.WriteSelect(strSelect);
+
+
                 var rows = new List<Text>();
 
                 foreach (var s in strSelect) { 

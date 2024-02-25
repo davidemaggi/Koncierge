@@ -17,7 +17,11 @@ namespace Koncierge.Models
         public KubeConfigFileStatus Status { get; set; }
         public bool JustAdded { get; set; }
 
+        public KubeConfigFile()
+        {
 
+            
+        }
         public KubeConfigFile(string name, string path)
         {
 

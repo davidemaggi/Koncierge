@@ -1,4 +1,5 @@
-﻿using Koncierge.Models;
+﻿using k8s.KubeConfigModels;
+using Koncierge.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +18,9 @@ namespace Koncierge.KubeConfig
         public KubeConfigFileStatus CheckKubeConfig(KubeConfigFile toCheck);
 
         public bool IsValidKubeConfig(string toCheckPath);
-
+        public Task<KubeConfigFile> GetKubeConfigFileFromPath(string p);
+        public MergeResult MergeKubeConfig(string toBeMerged, string mergetTo, bool force = false, bool verbose = false);
+        public K8SConfiguration ReadKubeConfig(string filePath);
+        public Task SaveKubeConfig(string path, K8SConfiguration config, bool backup = true);
     }
 }

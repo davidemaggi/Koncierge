@@ -21,9 +21,24 @@ namespace Koncierge.Cli
         public void WriteFatal(string msg) => AnsiConsole.MarkupLine($":skull: {msg}");
         public void WriteOk(string msg) => AnsiConsole.MarkupLine($":thumbs_up: {msg}");
         public void WriteKoncierge(string msg) => AnsiConsole.MarkupLine($":person_in_tuxedo: {msg}");
+        public void WriteSelect(string msg) => AnsiConsole.MarkupLine($":bullseye: You Selected: '{msg}'");
+        public void WriteSelect(List<string> msg) {
+            var rows = new List<Text>();
+
+            foreach (var s in msg)
+            {
+
+                rows.Add(new Text(s));
+
+            }
+            AnsiConsole.MarkupLine($":bullseye: You Selected:");
+            AnsiConsole.Write(new Rows(rows));
+            
+
+        }
 
 
-        
+
 
 
 
