@@ -3,41 +3,13 @@
     "Koncierge.Cli": {
       "commandName": "Project"
     },
-    "Koncierge info": {
-      "commandName": "Project",
-      "commandLineArgs": "info"
-    },
     "Koncierge -h": {
       "commandName": "Project",
       "commandLineArgs": "-h"
     },
-    "Koncierge config get": {
+    "Koncierge Specific Command": {
       "commandName": "Project",
-      "commandLineArgs": "config get"
-    },
-    "Koncierge config get --dry": {
-      "commandName": "Project",
-      "commandLineArgs": "config get --dry"
-    },
-    "Koncierge config ls": {
-      "commandName": "Project",
-      "commandLineArgs": "config ls"
-    },
-    "Koncierge config rm": {
-      "commandName": "Project",
-      "commandLineArgs": "config rm"
-    },
-    "Koncierge config rm --id 1": {
-      "commandName": "Project",
-      "commandLineArgs": "config rm --id 1"
-    },
-    "Koncierge config rm --id 9999": {
-      "commandName": "Project",
-      "commandLineArgs": "config rm --id 9999"
-    },
-    "Koncierge config merge": {
-      "commandName": "Project",
-      "commandLineArgs": "config merge -s \"C:\\Users\\Davide\\.kube\\config\""
+      "commandLineArgs": "info"
     }
   }
 }
