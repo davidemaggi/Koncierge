@@ -16,7 +16,7 @@ namespace Koncierge.KubeConfig
         public Task<List<KubeConfigFile>> GetKubeConfigFromPath(string p);
         public KubeConfigFileStatus CheckKubeConfig(KubeConfigFile toCheck);
 
-
+        public bool IsValidKubeConfig(string toCheckPath);
 
     }
 }

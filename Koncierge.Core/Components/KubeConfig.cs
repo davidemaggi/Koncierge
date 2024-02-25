@@ -17,7 +17,7 @@ namespace Koncierge.Core
             
             var configs= await _kubeConfig.GetKubeConfigFromPath();
 
-            if (!dry) { return SaveConfigs(configs); }
+            if (!dry) { return await SaveConfigs(configs); }
 
             return configs;
         }
@@ -35,7 +35,7 @@ namespace Koncierge.Core
 
         public string GetKubeConfigDefaultPath() => _kubeConfig.GetKubeConfigDefaultPath();
 
-        private List<KubeConfigFile> SaveConfigs(List<KubeConfigFile> configs) {
+        private async Task<List<KubeConfigFile>> SaveConfigs(List<KubeConfigFile> configs) {
 
             foreach (var config in configs)
             {
@@ -52,7 +52,21 @@ namespace Koncierge.Core
         }
 
 
+        public async Task<List<KubeConfigFile>> GetKubeConfigList()
+        {
+            return _konciergeDbService.KubeConfigFileRepository().All().ToList();
+        }
 
+
+        public async Task<bool> RemoveKubeConfig(int id)
+        {
+            return _konciergeDbService.KubeConfigFileRepository().Delete(id);
+        }
+
+        public async Task<bool> IsValidKubeConfig(string path)
+        {
+            return   _kubeConfig.IsValidKubeConfig(path);
+        }
 
     }
 }

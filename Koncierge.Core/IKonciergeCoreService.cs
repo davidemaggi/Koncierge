@@ -13,5 +13,11 @@ namespace Koncierge.Core
         public Task<List<KubeConfigFile>> GetKubeConfigFromPath(string path, bool dry = false);
 
         public string GetKubeConfigDefaultPath();
+        public Task<List<KubeConfigFile>> GetKubeConfigList();
+        public Task<bool> RemoveKubeConfig(int id);
+
+        public Task<bool> IsValidKubeConfig(string path);
+
+
     }
 }

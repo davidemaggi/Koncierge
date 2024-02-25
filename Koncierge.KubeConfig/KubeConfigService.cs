@@ -86,6 +86,15 @@ namespace Koncierge.KubeConfig
                 return KubeConfigFileStatus.MISSING;
             }
 
+
+
+            
+            return IsValidKubeConfig(toCheck.Path) ? KubeConfigFileStatus.OK  : KubeConfigFileStatus.INVALID;
+        }
+
+
+        public bool IsValidKubeConfig(string toCheckPath) {
+
             try
             {
 
@@ -94,21 +103,22 @@ namespace Koncierge.KubeConfig
        .IgnoreUnmatchedProperties()
        .Build();
 
-                K8SConfiguration kubeconfig = deserializer.Deserialize<K8SConfiguration>(File.ReadAllText(toCheck.Path));
+                K8SConfiguration kubeconfig = deserializer.Deserialize<K8SConfiguration>(File.ReadAllText(toCheckPath));
 
-                var config = KubernetesClientConfiguration.BuildConfigFromConfigFile(toCheck.Path);
+                var config = KubernetesClientConfiguration.BuildConfigFromConfigFile(toCheckPath);
 
 
-
+                return true;
 
             }
             catch
             {
-                return KubeConfigFileStatus.INVALID;
+                return false;
 
             }
 
-            return KubeConfigFileStatus.OK;
+
         }
+
     }
 }

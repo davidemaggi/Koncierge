@@ -6,6 +6,7 @@ using Koncierge.Database;
 using Microsoft.Extensions.DependencyInjection;
 using Spectre.Console;
 using Spectre.Console.Cli;
+using System;
 
 namespace Koncierge.Cli
 {
@@ -15,15 +16,15 @@ namespace Koncierge.Cli
         {
 
             Console.OutputEncoding = System.Text.Encoding.UTF8;
+
+
+
+
+            //var registrar = new TypeRegistrar(services);
+            // Create a new command app with the registrar
             var services = new ServiceCollection();
 
-            ConfigureServices(services);
-
-            var registrar = new TypeRegistrar(services);
-            // Create a new command app with the registrar
-
-
-            var app = new CommandApp<InfoCommand>(registrar);
+            var app = new CommandApp<InfoCommand>(ConfigureServices(services));
 
             app.Configure(config =>
             {
@@ -31,29 +32,14 @@ namespace Koncierge.Cli
 
                 config.AddBranch<KubeConfigSettings>("config", add =>
                 {
-                    add.AddCommand<GetKubeConfigCommand>("get");
+                    add.AddCommand<GetKubeConfigCommand>("get").WithAlias("g").WithDescription("Search For kubeconfig files in a path, if you don't provide a path it will look into the .kube folder");
+                    add.AddCommand<ListKubeConfigCommand>("list").WithAlias("l").WithAlias("ls").WithDescription("List of all the KubeConfig files Koncierge knows");
+                    add.AddCommand<RemoveKubeConfigCommand>("remove").WithAlias("r").WithAlias("rm").WithDescription("Remove KubeConfig File(s) from Configuration");
+                    add.AddCommand<MergeKubeConfigCommand>("merge").WithAlias("m").WithAlias("mrg").WithDescription("Merge 2 KubeConfig Files");
                     //add.AddCommand<AddReferenceCommand>("reference");
-                });
+                }).WithAlias("c");
 
-                //    config.AddCommand<WizardCommand>("wizard")
-                //    .WithAlias("w")
-                //    .WithDescription("Set your new Context and Namespace");
-
-                //    config.AddCommand<MergeCommand>("merge")
-                //   .WithAlias("m")
-                //   .WithDescription("Merge new YAML file with your KubeConfig");
-
-                //    config.AddCommand<ForwardCommand>("forward")
-                //   .WithAlias("f")
-                //   .WithAlias("fwd")
-                //   .WithDescription("Forward a service/pod port to localhost");
-                //    config.AddCommand<AliasCommand>("alias")
-                //.WithAlias("a")
-                //.WithDescription("Change Context Name to an alias");
-
-                //    config.AddCommand<DeleteCommand>("delete")
-                //   .WithAlias("d")
-                //   .WithDescription("Delete context from KubeConfig");
+                
 
                 config.AddCommand<InfoCommand>("info")
               .WithAlias("i")
@@ -64,14 +50,21 @@ namespace Koncierge.Cli
 
                 config.SetExceptionHandler((ex) =>
                 {
-                    AnsiConsole.WriteException(ex, ExceptionFormats.ShortenEverything);
-                });
+
+                    AnsiConsole.MarkupLine($":skull: {ex.Message}");
+
 
 #if DEBUG
-
-                config.ValidateExamples();
-
+                    AnsiConsole.WriteException(ex, ExceptionFormats.ShortenEverything);
 #endif
+                });
+
+
+
+#if DEBUG
+                config.ValidateExamples();
+#endif
+
             });
 
 
@@ -83,18 +76,20 @@ namespace Koncierge.Cli
             }
             catch (Exception ex)
             {
-                AnsiConsole.WriteException(ex, ExceptionFormats.ShortenEverything);
+                AnsiConsole.MarkupLine($":skull: {ex.Message}");
+
                 return -99;
             }
         }
 
 
-        public static void ConfigureServices(IServiceCollection services)
+        public static TypeRegistrar ConfigureServices(IServiceCollection services)
         {
 
             services.AddSingleton<IKonciergeDbService, KonciergeDbService>();
             services.AddSingleton<IKonciergeCoreService, KonciergeCoreService>();
-            var registrar = new TypeRegistrar(services);
+            services.AddSingleton<HelpersService>();
+            return new TypeRegistrar(services);
 
 
 

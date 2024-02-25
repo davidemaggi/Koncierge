@@ -14,7 +14,7 @@ namespace Koncierge.Database.Repositories
 
     public class KubeConfigFileRepository : BaseRepository<KubeConfigFile>, IKubeConfigFileRepository
     {
-        public KubeConfigFileRepository(ILiteDatabase db)
+        public KubeConfigFileRepository(ILiteDatabase db)         
         : base(db)
         { }
 
@@ -50,7 +50,7 @@ namespace Koncierge.Database.Repositories
         public KubeConfigFile FindByPath(string path)
         {
 
-            var ret = All().Where(x => x.Path == path).First();
+            var ret = All().Where(x => x.Path == path).FirstOrDefault();
 
             return ret;
 

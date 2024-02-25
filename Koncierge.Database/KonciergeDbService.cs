@@ -47,7 +47,7 @@ namespace Koncierge.Database
             }
           
 
-            return  new LiteDatabase($"Filename={_dbPath};Password={_key}");
+            return  new LiteDatabase($"Filename={_dbPath};Password={_key};");
 
 
 
