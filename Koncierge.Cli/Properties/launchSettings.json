@@ -9,7 +9,7 @@
     },
     "Koncierge Specific Command": {
       "commandName": "Project",
-      "commandLineArgs": "info"
+      "commandLineArgs": "config ls"
     }
   }
 }

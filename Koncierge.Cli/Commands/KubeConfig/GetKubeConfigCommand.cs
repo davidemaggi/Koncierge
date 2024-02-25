@@ -62,9 +62,9 @@ namespace Koncierge.Cli.Commands.KubeConfig
 
         
         var table = new Table();
-
-        // Add some columns
-        table.AddColumn(new TableColumn("Status").Centered());
+            table.Border = TableBorder.Ascii;
+            // Add some columns
+            table.AddColumn(new TableColumn("Status").Centered());
         table.AddColumn(new TableColumn("Name").Centered());
         table.AddColumn(new TableColumn("Path").Centered());
 

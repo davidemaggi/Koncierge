@@ -43,6 +43,7 @@ namespace Koncierge.Cli.Commands.KubeConfig
             
 
             var table = new Table();
+            table.Border = TableBorder.Ascii;
 
             // Add some columns
             table.AddColumn(new TableColumn("Id").Centered());
