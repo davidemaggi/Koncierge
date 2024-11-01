@@ -1,0 +1,56 @@
+{
+  "profiles": {
+    "Koncierge.Cli": {
+      "commandName": "Project",
+      "commandLineArgs": "--help"
+    },
+    "info": {
+      "commandName": "Project",
+      "commandLineArgs": "info"
+    },
+    "help": {
+      "commandName": "Project",
+      "commandLineArgs": "--help"
+    },
+    "kubeconfig list": {
+      "commandName": "Project",
+      "commandLineArgs": "kubeconfig list"
+    },
+    "tools init": {
+      "commandName": "Project",
+      "commandLineArgs": "tools init"
+    },
+    "forward": {
+      "commandName": "Project",
+      "commandLineArgs": "fwd"
+    },
+    "WSL": {
+      "commandName": "WSL2",
+      "distributionName": ""
+    },
+    "forward start": {
+      "commandName": "Project",
+      "commandLineArgs": "fwd start"
+    },
+    "forward list": {
+      "commandName": "Project",
+      "commandLineArgs": "fwd ls"
+    },
+    "fwd start --all": {
+      "commandName": "Project",
+      "commandLineArgs": "fwd start --all"
+    },
+    "fwd delete --all": {
+      "commandName": "Project",
+      "commandLineArgs": "fwd remove --all"
+    },
+    "fwd delete": {
+      "commandName": "Project",
+      "commandLineArgs": "fwd remove"
+    },
+    "forward --dry": {
+      "commandName": "Project",
+      "commandLineArgs": "forward wizard --dry"
+    }
+  }
+}

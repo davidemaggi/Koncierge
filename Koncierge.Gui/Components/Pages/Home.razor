@@ -1,0 +1,25 @@
+﻿@page "/"
+@using Koncierge.Core.Services.Interfaces
+@using Microsoft.Extensions.Logging
+
+<h1>Hello, world!</h1>
+
+Welcome to your new app.
+
+
+@code {
+    [Inject]
+    private  IKonciergeService _konciergeService { get; set; }
+
+    [Inject]
+    private ILogger<Home> _logger { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        var x = _konciergeService.GetKubeConfigs();
+        _logger.LogInformation($"Found {x.Count()} Configs");
+
+    
+    }
+}
