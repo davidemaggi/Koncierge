@@ -4,6 +4,8 @@
     "module": "commonjs",
     "strict": true,
     "esModuleInterop": true,
+    "inlineSources": true,
+    "sourceMap": true,
     "outDir": "./dist",
     "baseUrl": "./",
     "types": ["node"]

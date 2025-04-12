@@ -19,6 +19,10 @@ export class AppComponent implements OnInit {
     this.selectedOption="Test4";
 
     this.options = await window.electronAPI.getOptions();
+    let pods = await window.electronAPI.getPods();
+
+    console.log(pods);
+
   }
 
 

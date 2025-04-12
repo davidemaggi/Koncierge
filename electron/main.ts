@@ -1,6 +1,7 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
 import * as path from 'path';
 import { fetchOptions } from '../backend/apiService';
+import { fetchPods } from '../backend/k8sService';
 
 let win: BrowserWindow;
 
@@ -21,4 +22,7 @@ app.whenReady().then(createWindow);
 
 ipcMain.handle('get-options', async () => {
     return await fetchOptions();
+});
+ipcMain.handle('get-pods', async () => {
+    return await fetchPods();
 });

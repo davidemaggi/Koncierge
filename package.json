@@ -12,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@kubernetes/client-node": "^1.1.2",
     "axios": "^1.8.4",
     "electron": "^35.1.5"
   },
