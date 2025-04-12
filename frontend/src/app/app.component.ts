@@ -16,6 +16,8 @@ export class AppComponent implements OnInit {
   selectedOption: string | undefined;
 
   async ngOnInit() {
+    this.selectedOption="Test4";
+
     this.options = await window.electronAPI.getOptions();
   }
 
