@@ -23,10 +23,16 @@ package cmd
 
 import (
 	"github.com/davidemaggi/koncierge/cmd/forward"
+	"github.com/davidemaggi/koncierge/internal/container"
+	"k8s.io/client-go/util/homedir"
 	"os"
+	"path/filepath"
 
 	"github.com/spf13/cobra"
 )
+
+var isVerbose bool = false
+var kubeConfigFile string
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -41,6 +47,10 @@ to quickly create a Cobra application.`,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	// Run: func(cmd *cobra.Command, args []string) { },
+	PersistentPreRun: func(cmd *cobra.Command, args []string) {
+		// Initialize service container once
+		container.Init(isVerbose)
+	},
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -61,7 +71,15 @@ func init() {
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
-	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	rootCmd.PersistentFlags().BoolVar(&isVerbose, "verbose", false, "Help message for toggle")
+
+	startFile := ""
+
+	if home := homedir.HomeDir(); home != "" {
+		startFile = filepath.Join(home, ".kube", "config")
+	}
+
+	rootCmd.PersistentFlags().StringVarP(&kubeConfigFile, "kubeconfig", "f", startFile, "Help message for toggle")
 
 	rootCmd.AddCommand(forward.ForwardCmd)
 	rootCmd.AddCommand(NamespaceCmd)

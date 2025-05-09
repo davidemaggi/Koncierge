@@ -21,8 +21,11 @@ THE SOFTWARE.
 */
 package main
 
-import "github.com/davidemaggi/koncierge/cmd"
+import (
+	"github.com/davidemaggi/koncierge/cmd"
+)
 
 func main() {
+
 	cmd.Execute()
 }

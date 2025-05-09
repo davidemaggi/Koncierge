@@ -22,7 +22,7 @@ THE SOFTWARE.
 package cmd
 
 import (
-	"fmt"
+	"github.com/davidemaggi/koncierge/internal/container"
 
 	"github.com/spf13/cobra"
 )
@@ -38,9 +38,7 @@ and usage of using your command. For example:
 Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("context called")
-	},
+	Run: runCommand,
 }
 
 func init() {
@@ -54,4 +52,24 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// contextCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+}
+
+func runCommand(cmd *cobra.Command, args []string) {
+
+	logger := container.App.Logger
+
+	logger.Info(kubeConfigFile)
+	logger.Info("Test2")
+	logger.Error("Error")
+
+	logger.Info("Test3")
+
+	interstingStuff := map[string]any{
+		"when were crayons invented":  "1903",
+		"what is the meaning of life": 42,
+		"is this interesting":         true,
+	}
+
+	logger.MoreInfo("Test3", interstingStuff)
+
 }
