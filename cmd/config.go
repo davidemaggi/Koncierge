@@ -28,9 +28,10 @@ import (
 )
 
 // configCmd represents the config command
-var configCmd = &cobra.Command{
-	Use:   "config",
-	Short: "A brief description of your command",
+var ConfigCmd = &cobra.Command{
+	Use:     "config",
+	Aliases: []string{"conf"},
+	Short:   "A brief description of your command",
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
 
@@ -43,7 +44,6 @@ to quickly create a Cobra application.`,
 }
 
 func init() {
-	rootCmd.AddCommand(configCmd)
 
 	// Here you will define your flags and configuration settings.
 

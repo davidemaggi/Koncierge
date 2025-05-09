@@ -22,6 +22,7 @@ THE SOFTWARE.
 package cmd
 
 import (
+	"github.com/davidemaggi/koncierge/cmd/forward"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -61,4 +62,11 @@ func init() {
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+
+	rootCmd.AddCommand(forward.ForwardCmd)
+	rootCmd.AddCommand(NamespaceCmd)
+	rootCmd.AddCommand(ConfigCmd)
+	rootCmd.AddCommand(ContextCmd)
+	rootCmd.AddCommand(InfoCmd)
+
 }

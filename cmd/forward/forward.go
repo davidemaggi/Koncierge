@@ -19,18 +19,19 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-package cmd
+package forward
 
 import (
 	"fmt"
-
+	"github.com/davidemaggi/koncierge/internal/k8s"
 	"github.com/spf13/cobra"
 )
 
 // forwardCmd represents the forward command
-var forwardCmd = &cobra.Command{
-	Use:   "forward",
-	Short: "A brief description of your command",
+var ForwardCmd = &cobra.Command{
+	Use:     "forward",
+	Aliases: []string{"fwd"},
+	Short:   "A brief description of your command",
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
 
@@ -39,11 +40,12 @@ This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("forward called")
+		k8s.StartService()
+
 	},
 }
 
 func init() {
-	rootCmd.AddCommand(forwardCmd)
 
 	// Here you will define your flags and configuration settings.
 
