@@ -2,7 +2,7 @@ package k8s
 
 import "fmt"
 
-func StartService() {
+func ConnectToCluster(kubeconfig string) {
 	fmt.Println("Service started")
 	// Put actual start logic here
 }

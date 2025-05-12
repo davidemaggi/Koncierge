@@ -19,10 +19,13 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-package cmd
+package context
 
 import (
+	"github.com/davidemaggi/koncierge/internal/config"
 	"github.com/davidemaggi/koncierge/internal/container"
+	"github.com/davidemaggi/koncierge/internal/k8s"
+	"github.com/pterm/pterm"
 
 	"github.com/spf13/cobra"
 )
@@ -58,18 +61,41 @@ func runCommand(cmd *cobra.Command, args []string) {
 
 	logger := container.App.Logger
 
-	logger.Info(kubeConfigFile)
-	logger.Info("Test2")
-	logger.Error("Error")
+	contexts := k8s.GetAllContexts(config.KubeConfigFile)
+	selectedOption := ""
+	current := k8s.GetCurrentContext(config.KubeConfigFile)
 
-	logger.Info("Test3")
+	if len(contexts) == 0 {
+		logger.Info("No context available in " + pterm.Green(config.KubeConfigFile))
 
-	interstingStuff := map[string]any{
-		"when were crayons invented":  "1903",
-		"what is the meaning of life": 42,
-		"is this interesting":         true,
+		// Display the selected option to the user with a green color for emphasis
 	}
 
-	logger.MoreInfo("Test3", interstingStuff)
+	if len(contexts) == 1 {
+		selectedOption = contexts[0]
+		logger.Info("Only " + pterm.Green("one") + " context is available")
+
+		// Display the selected option to the user with a green color for emphasis
+	}
+
+	if len(contexts) >= 2 {
+		selectedOption, _ := pterm.DefaultInteractiveSelect.WithOptions(contexts).Show()
+
+		// Display the selected option to the user with a green color for emphasis
+		logger.Info("Switching to " + pterm.Green(selectedOption))
+
+	}
+
+	if selectedOption == current {
+		logger.Warn("Selected and Current context are the same " + pterm.Yellow("Skipping"))
+
+	}
+
+	logger.Info("Switching to " + pterm.Green(selectedOption))
+	err := k8s.SwitchContext(selectedOption, config.KubeConfigFile)
+
+	if err != nil {
+		return
+	}
 
 }

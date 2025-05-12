@@ -23,7 +23,6 @@ package forward
 
 import (
 	"fmt"
-	"github.com/davidemaggi/koncierge/internal/k8s"
 	"github.com/spf13/cobra"
 )
 
@@ -40,7 +39,7 @@ This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("forward called")
-		k8s.StartService()
+		//k8s.ConnectToCluster()
 
 	},
 }

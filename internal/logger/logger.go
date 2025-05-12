@@ -28,6 +28,10 @@ func (l *Logger) Info(msg string) {
 	l.logger.Info(msg)
 }
 
+func (l *Logger) Warn(msg string) {
+	l.logger.Warn(msg)
+}
+
 func (l *Logger) Error(msg string) {
 	l.logger.Error(msg)
 }

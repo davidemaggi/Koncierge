@@ -22,7 +22,9 @@ THE SOFTWARE.
 package cmd
 
 import (
+	"github.com/davidemaggi/koncierge/cmd/context"
 	"github.com/davidemaggi/koncierge/cmd/forward"
+	"github.com/davidemaggi/koncierge/internal/config"
 	"github.com/davidemaggi/koncierge/internal/container"
 	"k8s.io/client-go/util/homedir"
 	"os"
@@ -30,9 +32,6 @@ import (
 
 	"github.com/spf13/cobra"
 )
-
-var isVerbose bool = false
-var kubeConfigFile string
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -49,7 +48,7 @@ to quickly create a Cobra application.`,
 	// Run: func(cmd *cobra.Command, args []string) { },
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
 		// Initialize service container once
-		container.Init(isVerbose)
+		container.Init(config.IsVerbose)
 	},
 }
 
@@ -71,7 +70,7 @@ func init() {
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
-	rootCmd.PersistentFlags().BoolVar(&isVerbose, "verbose", false, "Help message for toggle")
+	rootCmd.PersistentFlags().BoolVar(&config.IsVerbose, "verbose", false, "Help message for toggle")
 
 	startFile := ""
 
@@ -79,12 +78,12 @@ func init() {
 		startFile = filepath.Join(home, ".kube", "config")
 	}
 
-	rootCmd.PersistentFlags().StringVarP(&kubeConfigFile, "kubeconfig", "f", startFile, "Help message for toggle")
+	rootCmd.PersistentFlags().StringVarP(&config.KubeConfigFile, "kubeconfig", "f", startFile, "Help message for toggle")
 
 	rootCmd.AddCommand(forward.ForwardCmd)
 	rootCmd.AddCommand(NamespaceCmd)
 	rootCmd.AddCommand(ConfigCmd)
-	rootCmd.AddCommand(ContextCmd)
+	rootCmd.AddCommand(context.ContextCmd)
 	rootCmd.AddCommand(InfoCmd)
 
 }
