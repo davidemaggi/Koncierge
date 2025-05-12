@@ -59,3 +59,6 @@ func (l *Logger) MoreFatal(msg string, args map[string]any) {
 func (l *Logger) MoreTrace(msg string, args map[string]any) {
 	l.logger.Trace(msg, l.logger.ArgsFromMap(args))
 }
+func (l *Logger) MoreWarn(msg string, args map[string]any) {
+	l.logger.Warn(msg, l.logger.ArgsFromMap(args))
+}
