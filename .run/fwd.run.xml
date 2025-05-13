@@ -1,0 +1,13 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="fwd" type="GoApplicationRunConfiguration" factoryName="Go Application">
+    <module name="Koncierge" />
+    <working_directory value="$PROJECT_DIR$" />
+    <parameters value="fwd --verbose" />
+    <kind value="PACKAGE" />
+    <package value="github.com/davidemaggi/koncierge" />
+    <directory value="$PROJECT_DIR$" />
+    <filePath value="$PROJECT_DIR$" />
+    <pty_enabled value="true" />
+    <method v="2" />
+  </configuration>
+</component>

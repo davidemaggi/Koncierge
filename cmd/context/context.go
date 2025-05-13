@@ -25,6 +25,7 @@ import (
 	"github.com/davidemaggi/koncierge/internal/config"
 	"github.com/davidemaggi/koncierge/internal/container"
 	"github.com/davidemaggi/koncierge/internal/k8s"
+	"github.com/davidemaggi/koncierge/internal/wizard"
 	"github.com/pterm/pterm"
 
 	"github.com/spf13/cobra"
@@ -60,40 +61,9 @@ func init() {
 func runCommand(cmd *cobra.Command, args []string) {
 
 	logger := container.App.Logger
-
-	contexts := k8s.GetAllContexts(config.KubeConfigFile)
-	selectedOption := ""
-	current := k8s.GetCurrentContextAsString(config.KubeConfigFile)
-
-	if len(contexts) == 0 {
-		logger.Info("No context available in " + pterm.Green(config.KubeConfigFile))
-
-		// Display the selected option to the user with a green color for emphasis
-	}
-
-	if len(contexts) == 1 {
-		selectedOption = contexts[0]
-		logger.Info("Only " + pterm.Green("one") + " context is available")
-
-		// Display the selected option to the user with a green color for emphasis
-	}
-
-	if len(contexts) >= 2 {
-		if current == "" {
-			current = contexts[0]
-		}
-
-		selectedOption, _ = pterm.DefaultInteractiveSelect.WithOptions(contexts).WithDefaultOption(current).Show()
-
-	}
-
-	if selectedOption == current {
-		logger.Warn("Selected and Current context are the same " + pterm.Yellow("Skipping"))
-
-	}
-
-	logger.Info("Switching to " + pterm.Green(selectedOption))
-	err := k8s.SwitchContext(selectedOption, config.KubeConfigFile)
+	newCtx := wizard.SelectContext()
+	logger.Info("Switching to " + pterm.Green(newCtx))
+	err := k8s.SwitchContext(newCtx, config.KubeConfigFile)
 
 	if err != nil {
 		return

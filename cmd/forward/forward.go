@@ -22,7 +22,10 @@ THE SOFTWARE.
 package forward
 
 import (
-	"fmt"
+	"github.com/davidemaggi/koncierge/internal/config"
+	"github.com/davidemaggi/koncierge/internal/container"
+	"github.com/davidemaggi/koncierge/internal/k8s"
+	"github.com/davidemaggi/koncierge/internal/wizard"
 	"github.com/spf13/cobra"
 )
 
@@ -37,11 +40,7 @@ and usage of using your command. For example:
 Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("forward called")
-		//k8s.ConnectToCluster()
-
-	},
+	Run: runCommand,
 }
 
 func init() {
@@ -55,4 +54,22 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// forwardCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+}
+
+func runCommand(cmd *cobra.Command, args []string) {
+
+	logger := container.App.Logger
+	err := k8s.ConnectToCluster(config.KubeConfigFile)
+
+	if err != nil {
+		logger.Error("Cannot Connect to cluster")
+		return
+	}
+
+	_ = wizard.BuildForward()
+
+	if err != nil {
+		return
+	}
+
 }

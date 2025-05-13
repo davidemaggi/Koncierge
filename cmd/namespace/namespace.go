@@ -25,6 +25,7 @@ import (
 	"github.com/davidemaggi/koncierge/internal/config"
 	"github.com/davidemaggi/koncierge/internal/container"
 	"github.com/davidemaggi/koncierge/internal/k8s"
+	"github.com/davidemaggi/koncierge/internal/wizard"
 	"github.com/pterm/pterm"
 
 	"github.com/spf13/cobra"
@@ -67,43 +68,10 @@ func runCommand(cmd *cobra.Command, args []string) {
 		return
 	}
 
-	spaces, err := k8s.GetAllNameSpaces(config.KubeConfigFile)
+	newNs := wizard.SelectNamespace()
 
-	if err != nil {
-		return
-	}
-
-	selectedOption := ""
-	current := k8s.GetCurrentNamespaceForContext(config.KubeConfigFile, k8s.GetCurrentContextAsString(config.KubeConfigFile))
-
-	if len(spaces) == 0 {
-		logger.Info("No namespace available in " + pterm.Green(config.KubeConfigFile))
-
-		// Display the selected option to the user with a green color for emphasis
-	}
-
-	if len(spaces) == 1 {
-		selectedOption = spaces[0]
-		logger.Info("Only " + pterm.Green("one") + " namespace is available")
-
-		// Display the selected option to the user with a green color for emphasis
-	}
-
-	if len(spaces) >= 2 {
-		if current == "" {
-			current = spaces[0]
-		}
-		selectedOption, _ = pterm.DefaultInteractiveSelect.WithOptions(spaces).WithDefaultOption(current).Show()
-
-	}
-
-	if selectedOption == current {
-		logger.Warn("Selected and Current namespace are the same " + pterm.Yellow("Skipping"))
-
-	}
-
-	logger.Info("Switching to " + pterm.Green(selectedOption))
-	err = k8s.SetDefaultNamespaceForContext(k8s.GetCurrentContextAsString(config.KubeConfigFile), selectedOption)
+	logger.Info("Switching to " + pterm.Green(newNs))
+	err = k8s.SetDefaultNamespaceForContext(k8s.GetCurrentContextAsString(config.KubeConfigFile), newNs)
 
 	if err != nil {
 		return
