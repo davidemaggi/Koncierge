@@ -6,6 +6,15 @@ type ForwardDto struct {
 	Namespace      string
 	ForwardType    string
 	TargetName     string
+	TargetPort     int32
+	LocalPort      int32
+}
+
+type ServicePortDto struct {
+	Protocol    string
+	ServicePort int32
+	PodPort     int32
+	Podname     string
 }
 
 const (

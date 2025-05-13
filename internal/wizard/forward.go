@@ -27,6 +27,8 @@ func BuildForward() internal.ForwardDto {
 
 	if ret.ForwardType == internal.ForwardService {
 		ret.TargetName, _ = pterm.DefaultInteractiveSelect.WithOptions(k8s.GetServicesInNamespace(ret.Namespace)).Show()
+		//ports := k8s.GetServicePorts(ret.Namespace, ret.TargetName) // Arrivato qui
+
 	}
 
 	return ret
