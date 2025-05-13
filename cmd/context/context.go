@@ -63,7 +63,7 @@ func runCommand(cmd *cobra.Command, args []string) {
 
 	contexts := k8s.GetAllContexts(config.KubeConfigFile)
 	selectedOption := ""
-	current := k8s.GetCurrentContext(config.KubeConfigFile)
+	current := k8s.GetCurrentContextAsString(config.KubeConfigFile)
 
 	if len(contexts) == 0 {
 		logger.Info("No context available in " + pterm.Green(config.KubeConfigFile))
@@ -79,10 +79,11 @@ func runCommand(cmd *cobra.Command, args []string) {
 	}
 
 	if len(contexts) >= 2 {
-		selectedOption, _ := pterm.DefaultInteractiveSelect.WithOptions(contexts).Show()
+		if current == "" {
+			current = contexts[0]
+		}
 
-		// Display the selected option to the user with a green color for emphasis
-		logger.Info("Switching to " + pterm.Green(selectedOption))
+		selectedOption, _ = pterm.DefaultInteractiveSelect.WithOptions(contexts).WithDefaultOption(current).Show()
 
 	}
 

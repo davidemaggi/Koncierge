@@ -1,13 +1,12 @@
 package k8s
 
 import (
-	"fmt"
 	"github.com/davidemaggi/koncierge/internal/container"
 	"github.com/pterm/pterm"
 	"k8s.io/client-go/tools/clientcmd"
 )
 
-func GetCurrentContext(kubeconfig string) string {
+func GetCurrentContextAsString(kubeconfig string) string {
 
 	config := clientcmd.GetConfigFromFileOrDie(kubeconfig)
 	if config != nil {
@@ -56,14 +55,20 @@ func SwitchContext(ctx, kubeconfig string) (err error) {
 	rawConfig := clientcmd.GetConfigFromFileOrDie(kubeconfig)
 	logger := container.App.Logger
 
-	if err != nil {
-		return err
-	}
 	if rawConfig.Contexts[ctx] == nil {
 		logger.Error("Context " + pterm.LightRed(kubeconfig) + " doesn't exists.")
-		return fmt.Errorf("context %s doesn't exists", ctx)
+		return
 	}
 	rawConfig.CurrentContext = ctx
 	err = clientcmd.ModifyConfig(clientcmd.NewDefaultPathOptions(), *rawConfig, true)
+
+	if err != nil {
+
+		logger.Error("Context " + pterm.LightRed(kubeconfig) + " cannot be changed.")
+		return
+	}
+
+	k8sCurrentContextName = GetCurrentContextAsString(kubeconfig)
+
 	return
 }

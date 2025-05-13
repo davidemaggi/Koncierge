@@ -24,6 +24,7 @@ package cmd
 import (
 	"github.com/davidemaggi/koncierge/cmd/context"
 	"github.com/davidemaggi/koncierge/cmd/forward"
+	"github.com/davidemaggi/koncierge/cmd/namespace"
 	"github.com/davidemaggi/koncierge/internal/config"
 	"github.com/davidemaggi/koncierge/internal/container"
 	"k8s.io/client-go/util/homedir"
@@ -81,7 +82,7 @@ func init() {
 	rootCmd.PersistentFlags().StringVarP(&config.KubeConfigFile, "kubeconfig", "f", startFile, "Help message for toggle")
 
 	rootCmd.AddCommand(forward.ForwardCmd)
-	rootCmd.AddCommand(NamespaceCmd)
+	rootCmd.AddCommand(namespace.NamespaceCmd)
 	rootCmd.AddCommand(ConfigCmd)
 	rootCmd.AddCommand(context.ContextCmd)
 	rootCmd.AddCommand(InfoCmd)

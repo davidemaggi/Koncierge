@@ -19,10 +19,13 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-package cmd
+package namespace
 
 import (
-	"fmt"
+	"github.com/davidemaggi/koncierge/internal/config"
+	"github.com/davidemaggi/koncierge/internal/container"
+	"github.com/davidemaggi/koncierge/internal/k8s"
+	"github.com/pterm/pterm"
 
 	"github.com/spf13/cobra"
 )
@@ -38,9 +41,7 @@ and usage of using your command. For example:
 Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("namespace called")
-	},
+	Run: runCommand,
 }
 
 func init() {
@@ -54,4 +55,58 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// namespaceCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+}
+
+func runCommand(cmd *cobra.Command, args []string) {
+
+	logger := container.App.Logger
+	err := k8s.ConnectToCluster(config.KubeConfigFile)
+
+	if err != nil {
+		logger.Error("Cannot Connect to cluster")
+		return
+	}
+
+	spaces, err := k8s.GetAllNameSpaces(config.KubeConfigFile)
+
+	if err != nil {
+		return
+	}
+
+	selectedOption := ""
+	current := k8s.GetCurrentNamespaceForContext(config.KubeConfigFile, k8s.GetCurrentContextAsString(config.KubeConfigFile))
+
+	if len(spaces) == 0 {
+		logger.Info("No namespace available in " + pterm.Green(config.KubeConfigFile))
+
+		// Display the selected option to the user with a green color for emphasis
+	}
+
+	if len(spaces) == 1 {
+		selectedOption = spaces[0]
+		logger.Info("Only " + pterm.Green("one") + " namespace is available")
+
+		// Display the selected option to the user with a green color for emphasis
+	}
+
+	if len(spaces) >= 2 {
+		if current == "" {
+			current = spaces[0]
+		}
+		selectedOption, _ = pterm.DefaultInteractiveSelect.WithOptions(spaces).WithDefaultOption(current).Show()
+
+	}
+
+	if selectedOption == current {
+		logger.Warn("Selected and Current namespace are the same " + pterm.Yellow("Skipping"))
+
+	}
+
+	logger.Info("Switching to " + pterm.Green(selectedOption))
+	err = k8s.SetDefaultNamespaceForContext(k8s.GetCurrentContextAsString(config.KubeConfigFile), selectedOption)
+
+	if err != nil {
+		return
+	}
+
 }

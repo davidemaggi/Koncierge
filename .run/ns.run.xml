@@ -1,8 +1,8 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="ctx" type="GoApplicationRunConfiguration" factoryName="Go Application">
+  <configuration default="false" name="ns" type="GoApplicationRunConfiguration" factoryName="Go Application">
     <module name="Koncierge" />
     <working_directory value="$PROJECT_DIR$" />
-    <parameters value="ctx --verbose" />
+    <parameters value="ns --verbose" />
     <kind value="PACKAGE" />
     <package value="github.com/davidemaggi/koncierge" />
     <directory value="$PROJECT_DIR$" />
