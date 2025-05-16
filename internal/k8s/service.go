@@ -38,6 +38,7 @@ func GetServicePorts(namespace, serviceName string) []internal.ServicePortDto {
 		tmp.ServicePort = port.Port
 		tmp.Protocol = string(port.Protocol)
 		tmp.PodPort = port.TargetPort.IntVal
+		//tmp.Podname = port.
 		ret = append(ret, tmp)
 	}
 

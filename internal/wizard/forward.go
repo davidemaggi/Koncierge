@@ -4,13 +4,17 @@ import (
 	"fmt"
 	"github.com/davidemaggi/koncierge/internal"
 	"github.com/davidemaggi/koncierge/internal/config"
+	"github.com/davidemaggi/koncierge/internal/container"
 	"github.com/davidemaggi/koncierge/internal/k8s"
 	"github.com/pterm/pterm"
+	"log"
+	"strconv"
 )
 
 func BuildForward() internal.ForwardDto {
 
 	var ret internal.ForwardDto
+	logger := container.App.Logger
 
 	ret.KubeconfigPath = config.KubeConfigFile
 	ret.ContextName = k8s.GetCurrentContextAsString(config.KubeConfigFile)
@@ -28,13 +32,16 @@ func BuildForward() internal.ForwardDto {
 	var ports []internal.ServicePortDto
 	if ret.ForwardType == internal.ForwardService {
 		ret.TargetName, _ = pterm.DefaultInteractiveSelect.WithOptions(k8s.GetServicesInNamespace(ret.Namespace)).Show()
-		ports = k8s.GetServicePorts(ret.Namespace, ret.TargetName) // Arrivato qui
+
+		ret.PodName, _ = k8s.GetFirstPodForService(ret.Namespace, ret.TargetName)
+		ports = k8s.GetServicePorts(ret.Namespace, ret.TargetName)
 
 	}
 
 	if ret.ForwardType == internal.ForwardPod {
 		// TODO: get Pod ports
-
+		//ret.TargetName, _ = pterm.DefaultInteractiveSelect.WithOptions(k8s.GetPodsInNamespace(ret.Namespace)).Show()
+		//ports = k8s.GetServicePorts(ret.Namespace, ret.TargetName)
 	}
 
 	var portOptions []string
@@ -55,7 +62,27 @@ func BuildForward() internal.ForwardDto {
 	// Retrieve full object based on name
 	selectedPort := portMap[selectedName]
 
-	_ = selectedPort
+	ret.TargetPort = selectedPort.ServicePort
+
+	localPortTxt, _ := pterm.DefaultInteractiveTextInput.WithDefaultValue(fmt.Sprintf("%d", ret.TargetPort)).Show()
+
+	if val, err := strconv.ParseInt(localPortTxt, 10, 32); err == nil {
+		ret.LocalPort = int32(val)
+
+	} else {
+		logger.Error("Failed to parse local port number")
+	}
+
+	stop, ready, err := k8s.StartPortForward(ret)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	<-ready
+	fmt.Println("Port forward is ready!")
+
+	// Later, to stop it:
+	close(stop)
 
 	return ret
 }

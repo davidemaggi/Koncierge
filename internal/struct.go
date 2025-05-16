@@ -6,6 +6,7 @@ type ForwardDto struct {
 	Namespace      string
 	ForwardType    string
 	TargetName     string
+	PodName        string
 	TargetPort     int32
 	LocalPort      int32
 }
