@@ -82,7 +82,8 @@ func runCommand(cmd *cobra.Command, args []string) {
 	}
 
 	<-ready
-	logger.Info("Port-forwarding started. Press Ctrl+C to stop.")
+	logger.Info("Port-forwarding started.")
+	logger.Info("Press Ctrl+C to stop...")
 
 	ctx, stopSig := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer stopSig()
