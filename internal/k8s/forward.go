@@ -4,10 +4,11 @@ import (
 	"fmt"
 	"github.com/davidemaggi/koncierge/internal"
 	"github.com/davidemaggi/koncierge/internal/container"
+	"github.com/pterm/pterm"
+	"io"
 	"k8s.io/client-go/tools/portforward"
 	"k8s.io/client-go/transport/spdy"
 	"net/http"
-	"os"
 )
 
 func StartPortForward(fwd internal.ForwardDto) (stopChan chan struct{}, readyChan chan struct{}, err error) {
@@ -43,7 +44,7 @@ func StartPortForward(fwd internal.ForwardDto) (stopChan chan struct{}, readyCha
 	readyChan = make(chan struct{})
 
 	// Create the port forwarder
-	forwarder, err := portforward.New(dialer, []string{portMapping}, stopChan, readyChan, os.Stdout, os.Stderr)
+	forwarder, err := portforward.New(dialer, []string{portMapping}, stopChan, readyChan, io.Discard, pterm.Error.Writer)
 	if err != nil {
 		return nil, nil, fmt.Errorf("Failed to create port forwarder: %w", err)
 	}

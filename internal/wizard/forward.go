@@ -7,7 +7,6 @@ import (
 	"github.com/davidemaggi/koncierge/internal/container"
 	"github.com/davidemaggi/koncierge/internal/k8s"
 	"github.com/pterm/pterm"
-	"log"
 	"strconv"
 )
 
@@ -72,17 +71,6 @@ func BuildForward() internal.ForwardDto {
 	} else {
 		logger.Error("Failed to parse local port number")
 	}
-
-	stop, ready, err := k8s.StartPortForward(ret)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	<-ready
-	fmt.Println("Port forward is ready!")
-
-	// Later, to stop it:
-	close(stop)
 
 	return ret
 }

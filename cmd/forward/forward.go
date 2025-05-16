@@ -27,6 +27,10 @@ import (
 	"github.com/davidemaggi/koncierge/internal/k8s"
 	"github.com/davidemaggi/koncierge/internal/wizard"
 	"github.com/spf13/cobra"
+	"golang.org/x/net/context"
+	"log"
+	"os/signal"
+	"syscall"
 )
 
 // forwardCmd represents the forward command
@@ -66,10 +70,28 @@ func runCommand(cmd *cobra.Command, args []string) {
 		return
 	}
 
-	_ = wizard.BuildForward()
+	fwd := wizard.BuildForward()
 
 	if err != nil {
 		return
 	}
+
+	stop, ready, err := k8s.StartPortForward(fwd)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	<-ready
+	logger.Info("Port-forwarding started. Press Ctrl+C to stop.")
+
+	ctx, stopSig := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
+	defer stopSig()
+
+	// Wait for Ctrl+C
+	<-ctx.Done()
+
+	logger.Info("Shutting down port-forward...")
+
+	close(stop)
 
 }
