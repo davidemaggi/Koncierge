@@ -4,9 +4,10 @@ import (
 	"github.com/davidemaggi/koncierge/internal/container"
 	"github.com/pterm/pterm"
 	"k8s.io/client-go/tools/clientcmd"
+	"os"
 )
 
-func GetCurrentContextAsString(kubeconfig string) string {
+func GetCurrentContextAsStringFromConfig(kubeconfig string) string {
 
 	config := clientcmd.GetConfigFromFileOrDie(kubeconfig)
 	if config != nil {
@@ -14,6 +15,11 @@ func GetCurrentContextAsString(kubeconfig string) string {
 		return config.CurrentContext
 	}
 	return ""
+}
+
+func (k *KubeService) GetCurrentContextAsString() string {
+
+	return k.CurrentContext
 }
 
 func GetAllContexts(kubeconfig string) []string {
@@ -47,6 +53,8 @@ func GetAllContexts(kubeconfig string) []string {
 
 	} else {
 		logger.Error("Cannot retrieve a valid config from " + pterm.LightMagenta(kubeconfig))
+		os.Exit(1)
+
 	}
 	return nil
 }
@@ -57,7 +65,8 @@ func SwitchContext(ctx, kubeconfig string) (err error) {
 
 	if rawConfig.Contexts[ctx] == nil {
 		logger.Error("Context " + pterm.LightRed(kubeconfig) + " doesn't exists.")
-		return
+		os.Exit(1)
+
 	}
 	rawConfig.CurrentContext = ctx
 	err = clientcmd.ModifyConfig(clientcmd.NewDefaultPathOptions(), *rawConfig, true)
@@ -65,10 +74,8 @@ func SwitchContext(ctx, kubeconfig string) (err error) {
 	if err != nil {
 
 		logger.Error("Context " + pterm.LightRed(kubeconfig) + " cannot be changed.")
-		return
+		os.Exit(1)
 	}
 
-	k8sCurrentContextName = GetCurrentContextAsString(kubeconfig)
-
-	return
+	return nil
 }

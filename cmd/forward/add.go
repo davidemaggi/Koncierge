@@ -22,22 +22,18 @@ THE SOFTWARE.
 package forward
 
 import (
-	"github.com/davidemaggi/koncierge/internal/config"
-	"github.com/davidemaggi/koncierge/internal/container"
+	"github.com/davidemaggi/koncierge/internal"
+	"github.com/davidemaggi/koncierge/internal/db"
 	"github.com/davidemaggi/koncierge/internal/k8s"
-	"github.com/davidemaggi/koncierge/internal/ui"
+	"github.com/davidemaggi/koncierge/internal/repositories/forwardRepository"
 	"github.com/davidemaggi/koncierge/internal/wizard"
 	"github.com/spf13/cobra"
-	"golang.org/x/net/context"
-	"log"
-	"os/signal"
-	"syscall"
 )
 
 // forwardCmd represents the forward command
-var ForwardCmd = &cobra.Command{
-	Use:     "forward",
-	Aliases: []string{"fwd"},
+var FwdAddCmd = &cobra.Command{
+	Use:     "add",
+	Aliases: []string{"fwd add"},
 	Short:   "A brief description of your command",
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
@@ -45,12 +41,10 @@ and usage of using your command. For example:
 Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
-	Run: runCommand,
+	Run: runAdd,
 }
 
 func init() {
-	ForwardCmd.AddCommand(FwdAddCmd)
-	ForwardCmd.AddCommand(FwdStartCmd)
 
 	// Here you will define your flags and configuration settings.
 
@@ -63,36 +57,61 @@ func init() {
 	// forwardCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
-func runCommand(cmd *cobra.Command, args []string) {
+func runAdd(cmd *cobra.Command, args []string) {
 
-	logger := container.App.Logger
-	kubeService, err := k8s.ConnectToCluster(config.KubeConfigFile)
-
-	if err != nil {
-		logger.Error("Cannot Connect to cluster")
-		return
-	}
+	//logger := container.App.Logger
+	fwdRepo := forwardRepository.NewForwardRepository(db.GetDB())
 
 	fwd := wizard.BuildForward()
 
-	stop, ready, err := kubeService.StartPortForward(fwd)
-	if err != nil {
-		log.Fatal(err)
+	done := false
+
+	for !done {
+
+		addConfig, _ := wizard.SelectOne([]string{internal.BoolYes, internal.BoolNo}, "Do you want to add an additional config?", func(t string) string {
+			return t
+		}, internal.BoolNo)
+
+		if addConfig == internal.BoolNo {
+			done = true
+			continue
+
+		}
+
+		addType, _ := wizard.SelectOne([]string{internal.ConfigTypeMap, internal.ConfigTypeSecret}, "Which kind of config?", func(t string) string {
+			return t
+
+		}, internal.ConfigTypeSecret)
+
+		kubeService, _ := k8s.ConnectToClusterAndContext(fwd.KubeconfigPath, fwd.ContextName)
+
+		var confs []internal.AdditionalConfigDto
+
+		if addType == internal.ConfigTypeSecret {
+
+			confs, _ = kubeService.GetSecretsInNamespace(fwd.Namespace)
+
+		}
+
+		if addType == internal.ConfigTypeMap {
+			confs, _ = kubeService.GetConfigMapsInNamespace(fwd.Namespace)
+
+		}
+
+		SelectConf, _ := wizard.SelectOne(confs, "Which one", func(dto internal.AdditionalConfigDto) string {
+			return dto.Name
+		}, "")
+
+		SelectVals, _ := wizard.SelectMany(SelectConf.Values, "Select Values", func(s string) string {
+			return s
+		})
+
+		fwd.AdditionalConfigs = append(fwd.AdditionalConfigs, internal.AdditionalConfigDto{
+			Name:       SelectConf.Name,
+			ConfigType: addType,
+			Values:     SelectVals,
+		})
+
 	}
-
-	<-ready
-	ui.PrintForwardOverview(fwd, nil)
-
-	logger.Info("Press Ctrl+C to stop...")
-
-	ctx, stopSig := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
-	defer stopSig()
-
-	// Wait for Ctrl+C
-	<-ctx.Done()
-
-	logger.Info("Shutting down port-forward...")
-
-	close(stop)
-
+	fwdRepo.CreateFromDto(fwd)
 }

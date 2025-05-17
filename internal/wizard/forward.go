@@ -16,12 +16,22 @@ func BuildForward() internal.ForwardDto {
 	logger := container.App.Logger
 
 	ret.KubeconfigPath = config.KubeConfigFile
-	ret.ContextName = k8s.GetCurrentContextAsString(config.KubeConfigFile)
+	ret.ContextName = config.KubeContext
+	kubeService, _ := k8s.ConnectToClusterAndContext(config.KubeConfigFile, config.KubeContext)
+	spaces, err := kubeService.GetAllNameSpaces()
 
-	ret.Namespace = SelectNamespace()
+	if err != nil {
+		logger.Error("Error retrieving namespaces")
+	}
+
+	current := k8s.GetCurrentNamespaceForContext(config.KubeConfigFile, config.KubeContext)
+
+	selNamespace, _ := SelectOne(spaces, "Select a namespace", func(f string) string {
+		return f
+	}, current)
 
 	//selectedOption, _ := pterm.DefaultInteractiveSelect.WithOptions(options).Show()
-
+	ret.Namespace = selNamespace
 	var fwdtypes []string
 
 	fwdtypes = append(fwdtypes, internal.ForwardService)
@@ -30,10 +40,13 @@ func BuildForward() internal.ForwardDto {
 	ret.ForwardType, _ = pterm.DefaultInteractiveSelect.WithOptions(fwdtypes).Show()
 	var ports []internal.ServicePortDto
 	if ret.ForwardType == internal.ForwardService {
-		ret.TargetName, _ = pterm.DefaultInteractiveSelect.WithOptions(k8s.GetServicesInNamespace(ret.Namespace)).Show()
 
-		ret.PodName, _ = k8s.GetFirstPodForService(ret.Namespace, ret.TargetName)
-		ports = k8s.GetServicePorts(ret.Namespace, ret.TargetName)
+		services := kubeService.GetServicesInNamespace(ret.Namespace)
+
+		selTarget, _ := SelectOne(services, "Select a service", func(s string) string { return s }, "")
+		ret.TargetName = selTarget
+		ret.PodName, _ = kubeService.GetFirstPodForService(ret.Namespace, ret.TargetName)
+		ports = kubeService.GetServicePorts(ret.Namespace, ret.TargetName)
 
 	}
 

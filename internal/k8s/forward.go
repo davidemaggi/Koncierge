@@ -11,25 +11,18 @@ import (
 	"net/http"
 )
 
-func StartPortForward(fwd internal.ForwardDto) (stopChan chan struct{}, readyChan chan struct{}, err error) {
+func (k *KubeService) StartPortForward(fwd internal.ForwardDto) (stopChan chan struct{}, readyChan chan struct{}, err error) {
 
 	logger := container.App.Logger
-	/*
-		if params.Out == nil {
-			params.Out = io.Discard
-		}
-		if params.ErrOut == nil {
-			params.ErrOut = io.Discard
-		}
-	*/
+
 	// Build the port forward URL
-	req := k8sClient.CoreV1().RESTClient().Post().
+	req := k.client.CoreV1().RESTClient().Post().
 		Resource("pods").
 		Namespace(fwd.Namespace).
 		Name(fwd.PodName).
 		SubResource("portforward")
 
-	transport, upgrader, err := spdy.RoundTripperFor(k8sConfig)
+	transport, upgrader, err := spdy.RoundTripperFor(k.config)
 	if err != nil {
 		return nil, nil, fmt.Errorf("failed to create round tripper: %w", err)
 	}

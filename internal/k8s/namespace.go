@@ -2,11 +2,11 @@ package k8s
 
 import (
 	stdcontext "context"
-	"github.com/davidemaggi/koncierge/internal/config"
 	"github.com/davidemaggi/koncierge/internal/container"
 	"github.com/pterm/pterm"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/tools/clientcmd"
+	"os"
 )
 
 func GetCurrentNamespaceForContext(kubeconfig string, contextName string) string {
@@ -19,24 +19,18 @@ func GetCurrentNamespaceForContext(kubeconfig string, contextName string) string
 	return ""
 }
 
-func GetAllNameSpaces(kubeconfig string) ([]string, error) {
+func (k *KubeService) GetAllNameSpaces() ([]string, error) {
 
 	logger := container.App.Logger
 
 	var ret []string
 
-	err := ConnectToCluster(config.KubeConfigFile)
-
-	if err != nil {
-		logger.Error("Cannot Connect to cluster")
-		return nil, err
-	}
-
-	namespaces, err := k8sClient.CoreV1().Namespaces().List(stdcontext.TODO(), metav1.ListOptions{})
+	namespaces, err := k.client.CoreV1().Namespaces().List(stdcontext.TODO(), metav1.ListOptions{})
 
 	if err != nil {
 		logger.Error("Error Retrieving Namespaces")
-		return nil, err
+		os.Exit(1)
+
 	}
 
 	for _, ns := range namespaces.Items {
@@ -46,12 +40,15 @@ func GetAllNameSpaces(kubeconfig string) ([]string, error) {
 	return ret, nil
 }
 
-func SetDefaultNamespaceForContext(contextName string, namespace string) error {
-	rawConfig := clientcmd.GetConfigFromFileOrDie(k8sConfigPath)
+func SetDefaultNamespaceForContext(kubeConfig string, contextName string, namespace string) error {
+	var logger = container.App.Logger
+	rawConfig := clientcmd.GetConfigFromFileOrDie(kubeConfig)
 	// Get the context to update
 	ctx, exists := rawConfig.Contexts[contextName]
 	if !exists {
-		k8sLogger.Error("Could not find context " + pterm.Red(contextName) + "in " + pterm.Red(k8sConfigPath))
+		logger.Error("Could not find context " + pterm.Red(contextName) + "in " + pterm.Red(kubeConfig))
+		os.Exit(1)
+
 	}
 
 	// Set the namespace
@@ -60,7 +57,8 @@ func SetDefaultNamespaceForContext(contextName string, namespace string) error {
 	// Save the updated config
 	err := clientcmd.ModifyConfig(clientcmd.NewDefaultPathOptions(), *rawConfig, false)
 	if err != nil {
-		k8sLogger.Error("Failed to save updated kubeconfig " + pterm.Red(err))
+		logger.Error("Failed to save updated kubeconfig " + pterm.Red(err))
+		os.Exit(1)
 
 	}
 

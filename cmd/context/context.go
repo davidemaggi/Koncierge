@@ -22,6 +22,7 @@ THE SOFTWARE.
 package context
 
 import (
+	"fmt"
 	"github.com/davidemaggi/koncierge/internal/config"
 	"github.com/davidemaggi/koncierge/internal/container"
 	"github.com/davidemaggi/koncierge/internal/k8s"
@@ -61,7 +62,16 @@ func init() {
 func runCommand(cmd *cobra.Command, args []string) {
 
 	logger := container.App.Logger
-	newCtx := wizard.SelectContext()
+
+	kubeService, _ := k8s.ConnectToClusterAndContext(config.KubeConfigFile, config.KubeContext)
+
+	contexts := k8s.GetAllContexts(config.KubeConfigFile)
+	current := kubeService.GetCurrentContextAsString()
+
+	newCtx, _ := wizard.SelectOne(contexts, "Select the new context", func(f string) string {
+		return fmt.Sprintf("%s", f)
+	}, current)
+
 	logger.Info("Switching to " + pterm.Green(newCtx))
 	err := k8s.SwitchContext(newCtx, config.KubeConfigFile)
 

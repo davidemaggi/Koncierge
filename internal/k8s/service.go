@@ -2,17 +2,19 @@ package k8s
 
 import (
 	"github.com/davidemaggi/koncierge/internal"
+	"github.com/davidemaggi/koncierge/internal/container"
 	"golang.org/x/net/context"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-func GetServicesInNamespace(namespace string) []string {
+func (k *KubeService) GetServicesInNamespace(namespace string) []string {
 
+	var logger = container.App.Logger
 	var ret []string
 
-	services, err := k8sClient.CoreV1().Services(namespace).List(context.TODO(), metav1.ListOptions{})
+	services, err := k.client.CoreV1().Services(namespace).List(context.TODO(), metav1.ListOptions{})
 	if err != nil {
-		k8sLogger.Error("Failed to list services in namespace " + namespace)
+		logger.Error("Failed to list services in namespace " + namespace)
 	}
 
 	for _, svc := range services.Items {
@@ -22,12 +24,14 @@ func GetServicesInNamespace(namespace string) []string {
 	return ret
 }
 
-func GetServicePorts(namespace, serviceName string) []internal.ServicePortDto {
+func (k *KubeService) GetServicePorts(namespace string, serviceName string) []internal.ServicePortDto {
+	var logger = container.App.Logger
 
 	var ret []internal.ServicePortDto
-	svc, err := k8sClient.CoreV1().Services(namespace).Get(context.TODO(), serviceName, metav1.GetOptions{})
+
+	svc, err := k.client.CoreV1().Services(namespace).Get(context.TODO(), serviceName, metav1.GetOptions{})
 	if err != nil {
-		k8sLogger.Error("Failed to get service " + serviceName + " in namespace " + namespace)
+		logger.Error("Failed to get service " + serviceName + " in namespace " + namespace)
 		return ret
 	}
 

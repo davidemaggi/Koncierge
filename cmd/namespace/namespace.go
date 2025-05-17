@@ -61,17 +61,30 @@ func init() {
 func runCommand(cmd *cobra.Command, args []string) {
 
 	logger := container.App.Logger
-	err := k8s.ConnectToCluster(config.KubeConfigFile)
+	kubeService, err := k8s.ConnectToClusterAndContext(config.KubeConfigFile, config.KubeContext)
+
+	/*
+		if err != nil {
+			logger.Error("Cannot Connect to cluster")
+			return
+		}
+	*/
+
+	spaces, err := kubeService.GetAllNameSpaces()
 
 	if err != nil {
-		logger.Error("Cannot Connect to cluster")
-		return
+		logger.Error("Error retrieving namespaces")
 	}
 
-	newNs := wizard.SelectNamespace()
+	current := k8s.GetCurrentNamespaceForContext(config.KubeConfigFile, config.KubeContext)
+
+	selNamespace, _ := wizard.SelectOne(spaces, "Select a namespace", func(f string) string {
+		return f
+	}, current)
+	newNs := selNamespace
 
 	logger.Info("Switching to " + pterm.Green(newNs))
-	err = k8s.SetDefaultNamespaceForContext(k8s.GetCurrentContextAsString(config.KubeConfigFile), newNs)
+	err = k8s.SetDefaultNamespaceForContext(config.KubeConfigFile, k8s.GetCurrentContextAsStringFromConfig(config.KubeConfigFile), newNs)
 
 	if err != nil {
 		return

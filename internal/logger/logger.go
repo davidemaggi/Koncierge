@@ -8,6 +8,10 @@ type Logger struct {
 	logger *pterm.Logger
 }
 
+func (l *Logger) Get() *pterm.Logger {
+	return l.logger
+}
+
 func NewLogger(isVerbose bool) *Logger {
 
 	lvl := pterm.LogLevelWarn

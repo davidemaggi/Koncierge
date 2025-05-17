@@ -6,9 +6,10 @@ import (
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-func GetFirstPodForService(namespace string, serviceName string) (string, error) {
+func (k *KubeService) GetFirstPodForService(namespace string, serviceName string) (string, error) {
 	// Get the service
-	svc, err := k8sClient.CoreV1().Services(namespace).Get(context.TODO(), serviceName, v1.GetOptions{})
+
+	svc, err := k.client.CoreV1().Services(namespace).Get(context.TODO(), serviceName, v1.GetOptions{})
 	if err != nil {
 		return "", fmt.Errorf("failed to get service: %w", err)
 	}
@@ -27,7 +28,7 @@ func GetFirstPodForService(namespace string, serviceName string) (string, error)
 	selectorString = selectorString[:len(selectorString)-1] // trim trailing comma
 
 	// Get pods matching the selector
-	pods, err := k8sClient.CoreV1().Pods(namespace).List(context.TODO(), v1.ListOptions{
+	pods, err := k.client.CoreV1().Pods(namespace).List(context.TODO(), v1.ListOptions{
 		LabelSelector: selectorString,
 	})
 	if err != nil {
