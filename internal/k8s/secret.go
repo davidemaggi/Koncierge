@@ -23,7 +23,7 @@ func (k *KubeService) GetSecretsInNamespace(namespace string) ([]internal.Additi
 
 		var vals []string
 
-		for key, _ := range secret.Data {
+		for key := range secret.Data {
 
 			vals = append(vals, key)
 

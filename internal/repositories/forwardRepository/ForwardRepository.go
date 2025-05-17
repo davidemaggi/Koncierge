@@ -7,6 +7,7 @@ import (
 	"github.com/davidemaggi/koncierge/internal/repositories"
 	"github.com/davidemaggi/koncierge/models"
 	"gorm.io/gorm"
+	"os"
 )
 
 type ForwardRepository interface {
@@ -41,7 +42,7 @@ func (r *GormForwardRepository) CreateFromDto(fwd internal.ForwardDto) {
 		if err != nil {
 
 			logger.Error("Error creating new KubeConfig")
-
+			os.Exit(1)
 		}
 	}
 

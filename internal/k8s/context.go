@@ -45,7 +45,7 @@ func GetAllContexts(kubeconfig string) []string {
 		var options []string
 
 		// Generate 100 options and add them to the options slice
-		for key, _ := range config.Contexts {
+		for key := range config.Contexts {
 			options = append(options, key)
 		}
 

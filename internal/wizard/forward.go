@@ -7,6 +7,7 @@ import (
 	"github.com/davidemaggi/koncierge/internal/container"
 	"github.com/davidemaggi/koncierge/internal/k8s"
 	"github.com/pterm/pterm"
+	"os"
 	"strconv"
 )
 
@@ -26,10 +27,12 @@ func BuildForward() internal.ForwardDto {
 
 	current := k8s.GetCurrentNamespaceForContext(config.KubeConfigFile, config.KubeContext)
 
-	selNamespace, _ := SelectOne(spaces, "Select a namespace", func(f string) string {
+	selNamespace, ok := SelectOne(spaces, "Select a namespace", func(f string) string {
 		return f
 	}, current)
-
+	if !ok {
+		os.Exit(1)
+	}
 	//selectedOption, _ := pterm.DefaultInteractiveSelect.WithOptions(options).Show()
 	ret.Namespace = selNamespace
 	var fwdtypes []string
@@ -43,9 +46,19 @@ func BuildForward() internal.ForwardDto {
 
 		services := kubeService.GetServicesInNamespace(ret.Namespace)
 
-		selTarget, _ := SelectOne(services, "Select a service", func(s string) string { return s }, "")
+		selTarget, ok := SelectOne(services, "Select a service", func(s string) string { return s }, "")
+		if !ok {
+			os.Exit(1)
+		}
+
 		ret.TargetName = selTarget
-		ret.PodName, _ = kubeService.GetFirstPodForService(ret.Namespace, ret.TargetName)
+		ret.PodName, err = kubeService.GetFirstPodForService(ret.Namespace, ret.TargetName)
+
+		if err != nil {
+			logger.Error("Error retrieving pod")
+			os.Exit(1)
+		}
+
 		ports = kubeService.GetServicePorts(ret.Namespace, ret.TargetName)
 
 	}

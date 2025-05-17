@@ -8,7 +8,6 @@ import (
 
 type StringArray []string
 
-// Implement Scanner and Valuer to make GORM understand the type
 func (s *StringArray) Scan(value interface{}) error {
 	bytes, ok := value.([]byte)
 	if !ok {

@@ -1,5 +1,5 @@
 package config
 
-var IsVerbose bool = false
+var IsVerbose = false
 var KubeConfigFile string
 var KubeContext string

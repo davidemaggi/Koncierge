@@ -17,7 +17,6 @@ var (
 	dbFile string
 )
 
-// Init initializes the database with the given file name.
 func Init() {
 
 	dbFile = utils.GetKonciergeDBPath()
@@ -25,7 +24,7 @@ func Init() {
 	once.Do(func() {
 		var err error
 		db, err = gorm.Open(sqlite.Dialector{
-			DriverName: "sqlite", // this will match modernc.org/sqlite (if imported)
+			DriverName: "sqlite",
 			DSN:        dbFile,
 		}, &gorm.Config{})
 		if err != nil {

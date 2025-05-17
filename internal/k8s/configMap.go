@@ -23,7 +23,7 @@ func (k *KubeService) GetConfigMapsInNamespace(namespace string) ([]internal.Add
 
 		var vals []string
 
-		for key, _ := range m.Data {
+		for key := range m.Data {
 
 			vals = append(vals, key)
 
@@ -50,7 +50,7 @@ func (k *KubeService) GetConfigMapValue(namespace string, mapName string, value 
 	for _, m := range maps.Items {
 
 		if m.Name == mapName {
-			return string(m.Data[value]), nil
+			return m.Data[value], nil
 		}
 
 	}

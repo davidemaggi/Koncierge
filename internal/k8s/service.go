@@ -5,6 +5,7 @@ import (
 	"github.com/davidemaggi/koncierge/internal/container"
 	"golang.org/x/net/context"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"os"
 )
 
 func (k *KubeService) GetServicesInNamespace(namespace string) []string {
@@ -15,6 +16,7 @@ func (k *KubeService) GetServicesInNamespace(namespace string) []string {
 	services, err := k.client.CoreV1().Services(namespace).List(context.TODO(), metav1.ListOptions{})
 	if err != nil {
 		logger.Error("Failed to list services in namespace " + namespace)
+		os.Exit(1)
 	}
 
 	for _, svc := range services.Items {
@@ -32,7 +34,7 @@ func (k *KubeService) GetServicePorts(namespace string, serviceName string) []in
 	svc, err := k.client.CoreV1().Services(namespace).Get(context.TODO(), serviceName, metav1.GetOptions{})
 	if err != nil {
 		logger.Error("Failed to get service " + serviceName + " in namespace " + namespace)
-		return ret
+		os.Exit(1)
 	}
 
 	for _, port := range svc.Spec.Ports {

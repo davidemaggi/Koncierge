@@ -39,7 +39,7 @@ func (k *KubeService) StartPortForward(fwd internal.ForwardDto) (stopChan chan s
 	// Create the port forwarder
 	forwarder, err := portforward.New(dialer, []string{portMapping}, stopChan, readyChan, io.Discard, pterm.Error.Writer)
 	if err != nil {
-		return nil, nil, fmt.Errorf("Failed to create port forwarder: %w", err)
+		return nil, nil, fmt.Errorf("failed to create port forwarder: %w", err)
 	}
 
 	// Run it in background

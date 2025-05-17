@@ -1,24 +1,3 @@
-/*
-Copyright © 2025 Davide Maggi davide.maggi@proton.me
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-*/
 package forward
 
 import (
@@ -29,28 +8,22 @@ import (
 	"github.com/davidemaggi/koncierge/internal/wizard"
 	"github.com/spf13/cobra"
 	"golang.org/x/net/context"
-	"log"
+	"os"
 	"os/signal"
 	"syscall"
 )
 
-// forwardCmd represents the forward command
-var ForwardCmd = &cobra.Command{
+var FwdCmd = &cobra.Command{
 	Use:     "forward",
 	Aliases: []string{"fwd"},
-	Short:   "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
-	Run: runCommand,
+	Short:   "Just start a new forward",
+	Long:    `A wizard driven port-forward nobody wants to remember commands.`,
+	Run:     runCommand,
 }
 
 func init() {
-	ForwardCmd.AddCommand(FwdAddCmd)
-	ForwardCmd.AddCommand(FwdStartCmd)
+	FwdCmd.AddCommand(FwdAddCmd)
+	FwdCmd.AddCommand(FwdStartCmd)
 
 	// Here you will define your flags and configuration settings.
 
@@ -65,6 +38,9 @@ func init() {
 
 func runCommand(cmd *cobra.Command, args []string) {
 
+	_ = cmd
+	_ = args
+
 	logger := container.App.Logger
 	kubeService, err := k8s.ConnectToCluster(config.KubeConfigFile)
 
@@ -77,7 +53,8 @@ func runCommand(cmd *cobra.Command, args []string) {
 
 	stop, ready, err := kubeService.StartPortForward(fwd)
 	if err != nil {
-		log.Fatal(err)
+		logger.Error("Error starting port forward")
+		os.Exit(1)
 	}
 
 	<-ready

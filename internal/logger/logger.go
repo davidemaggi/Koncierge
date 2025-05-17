@@ -14,7 +14,7 @@ func (l *Logger) Get() *pterm.Logger {
 
 func NewLogger(isVerbose bool) *Logger {
 
-	lvl := pterm.LogLevelWarn
+	lvl := pterm.LogLevelInfo
 	if isVerbose {
 
 		lvl = pterm.LogLevelTrace
