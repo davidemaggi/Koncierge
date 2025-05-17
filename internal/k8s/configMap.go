@@ -15,7 +15,7 @@ func (k *KubeService) GetConfigMapsInNamespace(namespace string) ([]internal.Add
 
 	maps, err := k.client.CoreV1().ConfigMaps(namespace).List(context.TODO(), metav1.ListOptions{})
 	if err != nil {
-		logger.Error(fmt.Sprintf("Failed to list config maps: %v", err))
+		logger.Error(fmt.Sprintf("Failed to list config maps"), err)
 
 	}
 
@@ -43,7 +43,7 @@ func (k *KubeService) GetConfigMapValue(namespace string, mapName string, value 
 
 	maps, err := k.client.CoreV1().ConfigMaps(namespace).List(context.TODO(), metav1.ListOptions{})
 	if err != nil {
-		logger.Error(fmt.Sprintf("Failed to list Config Map: %v", err))
+		logger.Error(fmt.Sprintf("Failed to list Config Map"), err)
 
 	}
 

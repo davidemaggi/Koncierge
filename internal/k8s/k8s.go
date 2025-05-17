@@ -39,7 +39,7 @@ func ConnectToClusterAndContext(kubeconfig string, contextName string) (*KubeSer
 	k8sClient, k8sError := kubernetes.NewForConfig(k8sConfig)
 	if k8sError != nil {
 
-		logger.Error("Cannot connect to cluster")
+		logger.Error("Cannot connect to cluster", err)
 		return nil, err
 
 	}

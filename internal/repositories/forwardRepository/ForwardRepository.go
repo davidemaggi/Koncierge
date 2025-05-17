@@ -41,7 +41,7 @@ func (r *GormForwardRepository) CreateFromDto(fwd internal.ForwardDto) {
 		err = db.GetDB().First(&existingConfig, models.KubeConfigEntity{KubeconfigPath: fwd.KubeconfigPath}).Error
 		if err != nil {
 
-			logger.Error("Error creating new KubeConfig")
+			logger.Error("Error creating new KubeConfig", err)
 			os.Exit(1)
 		}
 	}
@@ -71,7 +71,7 @@ func (r *GormForwardRepository) CreateFromDto(fwd internal.ForwardDto) {
 		err = db.GetDB().Create(newFwd).Error
 
 		if err != nil {
-			logger.Error("Cannot create Forward")
+			logger.Error("Cannot create Forward", err)
 
 		} else {
 			logger.Info("Forward created")

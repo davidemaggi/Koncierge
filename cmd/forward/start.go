@@ -49,7 +49,7 @@ func runStart(cmd *cobra.Command, args []string) {
 	allForwards, err := forwardRepo.GetAll()
 
 	if err != nil {
-		logger.Error("Error Retrieving Forward List")
+		logger.Error("Error Retrieving Forward List", err)
 		os.Exit(1)
 	}
 
@@ -93,7 +93,7 @@ func runStart(cmd *cobra.Command, args []string) {
 
 		stop, ready, err := kubeService.StartPortForward(fwd)
 		if err != nil {
-			logger.Error(fmt.Sprintf("Failed to start port forward for %s: %v", fwd.TargetName, err))
+			logger.Error(fmt.Sprintf("Failed to start port forward for %s", fwd.TargetName), err)
 			os.Exit(1)
 		}
 

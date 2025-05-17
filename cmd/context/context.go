@@ -53,7 +53,7 @@ func runCommand(cmd *cobra.Command, args []string) {
 
 	if err != nil {
 
-		logger.Error("Error switching to " + pterm.Red(newCtx))
+		logger.Error("Error switching to "+pterm.Red(newCtx), err)
 
 	}
 

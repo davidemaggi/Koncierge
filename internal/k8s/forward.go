@@ -45,7 +45,7 @@ func (k *KubeService) StartPortForward(fwd internal.ForwardDto) (stopChan chan s
 	// Run it in background
 	go func() {
 		if err := forwarder.ForwardPorts(); err != nil {
-			logger.Error("Error Port Forward")
+			logger.Error("Error Port Forward", err)
 		}
 	}()
 

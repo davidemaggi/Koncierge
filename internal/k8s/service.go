@@ -15,7 +15,7 @@ func (k *KubeService) GetServicesInNamespace(namespace string) []string {
 
 	services, err := k.client.CoreV1().Services(namespace).List(context.TODO(), metav1.ListOptions{})
 	if err != nil {
-		logger.Error("Failed to list services in namespace " + namespace)
+		logger.Error("Failed to list services in namespace "+namespace, err)
 		os.Exit(1)
 	}
 
@@ -33,7 +33,7 @@ func (k *KubeService) GetServicePorts(namespace string, serviceName string) []in
 
 	svc, err := k.client.CoreV1().Services(namespace).Get(context.TODO(), serviceName, metav1.GetOptions{})
 	if err != nil {
-		logger.Error("Failed to get service " + serviceName + " in namespace " + namespace)
+		logger.Error("Failed to get service "+serviceName+" in namespace "+namespace, err)
 		os.Exit(1)
 	}
 

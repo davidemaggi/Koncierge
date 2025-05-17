@@ -22,7 +22,7 @@ func BuildForward() internal.ForwardDto {
 	spaces, err := kubeService.GetAllNameSpaces()
 
 	if err != nil {
-		logger.Error("Error retrieving namespaces")
+		logger.Error("Error retrieving namespaces", err)
 	}
 
 	current := k8s.GetCurrentNamespaceForContext(config.KubeConfigFile, config.KubeContext)
@@ -55,7 +55,7 @@ func BuildForward() internal.ForwardDto {
 		ret.PodName, err = kubeService.GetFirstPodForService(ret.Namespace, ret.TargetName)
 
 		if err != nil {
-			logger.Error("Error retrieving pod")
+			logger.Error("Error retrieving pod", err)
 			os.Exit(1)
 		}
 
@@ -95,7 +95,8 @@ func BuildForward() internal.ForwardDto {
 		ret.LocalPort = int32(val)
 
 	} else {
-		logger.Error("Failed to parse local port number")
+		logger.Error("Failed to parse local port number", err)
+		os.Exit(1)
 	}
 
 	return ret

@@ -36,8 +36,10 @@ func (l *Logger) Warn(msg string) {
 	l.logger.Warn(msg)
 }
 
-func (l *Logger) Error(msg string) {
+func (l *Logger) Error(msg string, err error) {
 	l.logger.Error(msg)
+	l.logger.Debug(err.Error())
+
 }
 
 func (l *Logger) Fatal(msg string) {

@@ -41,14 +41,14 @@ func runCommand(cmd *cobra.Command, args []string) {
 	kubeService, err := k8s.ConnectToClusterAndContext(config.KubeConfigFile, config.KubeContext)
 
 	if err != nil {
-		logger.Error("Cannot Connect to cluster")
+		logger.Error("Cannot Connect to cluster", err)
 		os.Exit(1)
 	}
 
 	spaces, err := kubeService.GetAllNameSpaces()
 
 	if err != nil {
-		logger.Error("Error retrieving namespaces")
+		logger.Error("Error retrieving namespaces", err)
 		os.Exit(1)
 	}
 

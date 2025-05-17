@@ -52,7 +52,7 @@ func GetAllContexts(kubeconfig string) []string {
 		return options
 
 	} else {
-		logger.Error("Cannot retrieve a valid config from " + pterm.LightMagenta(kubeconfig))
+		logger.Error("Cannot retrieve a valid config from "+pterm.LightMagenta(kubeconfig), nil)
 		os.Exit(1)
 
 	}
@@ -64,7 +64,7 @@ func SwitchContext(ctx, kubeconfig string) (err error) {
 	logger := container.App.Logger
 
 	if rawConfig.Contexts[ctx] == nil {
-		logger.Error("Context " + pterm.LightRed(kubeconfig) + " doesn't exists.")
+		logger.Error("Context "+pterm.LightRed(kubeconfig)+" doesn't exists.", nil)
 		os.Exit(1)
 
 	}
@@ -73,7 +73,7 @@ func SwitchContext(ctx, kubeconfig string) (err error) {
 
 	if err != nil {
 
-		logger.Error("Context " + pterm.LightRed(kubeconfig) + " cannot be changed.")
+		logger.Error("Context "+pterm.LightRed(kubeconfig)+" cannot be changed.", err)
 		os.Exit(1)
 	}
 

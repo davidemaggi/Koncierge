@@ -15,7 +15,7 @@ func (k *KubeService) GetSecretsInNamespace(namespace string) ([]internal.Additi
 
 	secrets, err := k.client.CoreV1().Secrets(namespace).List(context.TODO(), metav1.ListOptions{})
 	if err != nil {
-		logger.Error(fmt.Sprintf("Failed to list secrets: %v", err))
+		logger.Error(fmt.Sprintf("Failed to list secrets"), err)
 
 	}
 
@@ -44,7 +44,7 @@ func (k *KubeService) GetSecretValue(namespace string, secretName string, value 
 
 	secrets, err := k.client.CoreV1().Secrets(namespace).List(context.TODO(), metav1.ListOptions{})
 	if err != nil {
-		logger.Error(fmt.Sprintf("Failed to list secrets: %v", err))
+		logger.Error(fmt.Sprintf("Failed to list secrets"), err)
 
 	}
 

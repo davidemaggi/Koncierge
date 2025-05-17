@@ -45,7 +45,7 @@ func runCommand(cmd *cobra.Command, args []string) {
 	kubeService, err := k8s.ConnectToCluster(config.KubeConfigFile)
 
 	if err != nil {
-		logger.Error("Cannot Connect to cluster")
+		logger.Error("Cannot Connect to cluster", err)
 		return
 	}
 
@@ -53,7 +53,7 @@ func runCommand(cmd *cobra.Command, args []string) {
 
 	stop, ready, err := kubeService.StartPortForward(fwd)
 	if err != nil {
-		logger.Error("Error starting port forward")
+		logger.Error("Error starting port forward", err)
 		os.Exit(1)
 	}
 

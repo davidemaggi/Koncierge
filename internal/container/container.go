@@ -20,7 +20,7 @@ func Init(isVerbose bool) {
 	err := db.Migrate()
 
 	if err != nil {
-		lg.Error("Cannot Instantiate Database")
+		lg.Error("Cannot Instantiate Database", err)
 		os.Exit(1)
 	}
 

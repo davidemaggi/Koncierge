@@ -28,7 +28,7 @@ func (k *KubeService) GetAllNameSpaces() ([]string, error) {
 	namespaces, err := k.client.CoreV1().Namespaces().List(stdcontext.TODO(), metav1.ListOptions{})
 
 	if err != nil {
-		logger.Error("Error Retrieving Namespaces")
+		logger.Error("Error Retrieving Namespaces", err)
 		os.Exit(1)
 
 	}
@@ -46,7 +46,7 @@ func SetDefaultNamespaceForContext(kubeConfig string, contextName string, namesp
 	// Get the context to update
 	ctx, exists := rawConfig.Contexts[contextName]
 	if !exists {
-		logger.Error("Could not find context " + pterm.Red(contextName) + "in " + pterm.Red(kubeConfig))
+		logger.Error("Could not find context "+pterm.Red(contextName)+"in "+pterm.Red(kubeConfig), nil)
 		os.Exit(1)
 
 	}
@@ -57,7 +57,7 @@ func SetDefaultNamespaceForContext(kubeConfig string, contextName string, namesp
 	// Save the updated config
 	err := clientcmd.ModifyConfig(clientcmd.NewDefaultPathOptions(), *rawConfig, false)
 	if err != nil {
-		logger.Error("Failed to save updated kubeconfig " + pterm.Red(err))
+		logger.Error("Failed to save updated kubeconfig "+pterm.Red(err), err)
 		os.Exit(1)
 
 	}
