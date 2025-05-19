@@ -74,7 +74,7 @@ func BuildForward() internal.ForwardDto {
 	portMap := make(map[string]internal.ServicePortDto)
 
 	for _, port := range ports {
-		tmpKey := fmt.Sprintf("%d (%s)", port.PodPort, port.Protocol)
+		tmpKey := fmt.Sprintf("%d (%s)", port.ServicePort, port.Protocol)
 		portOptions = append(portOptions, tmpKey)
 		portMap[tmpKey] = port
 	}
@@ -87,7 +87,7 @@ func BuildForward() internal.ForwardDto {
 	// Retrieve full object based on name
 	selectedPort := portMap[selectedName]
 
-	ret.TargetPort = selectedPort.ServicePort
+	ret.TargetPort = selectedPort.PodPort
 
 	localPortTxt, _ := pterm.DefaultInteractiveTextInput.WithDefaultValue(fmt.Sprintf("%d", ret.TargetPort)).Show()
 
