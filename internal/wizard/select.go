@@ -48,10 +48,11 @@ func SelectMany[T any](items []T, label string, getKey func(T) string) ([]T, boo
 		WithOptions(options).
 		WithDefaultText(label).
 		WithKeyConfirm(keys.Enter).
-		WithKeySelect(keys.Space).
+		WithKeySelect(keys.Tab).
 		Show()
 
 	if err != nil {
+
 		return nil, false
 	}
 

@@ -69,7 +69,7 @@ func runStart(cmd *cobra.Command, args []string) {
 		} else {
 
 			selectedForwards, ok := wizard.SelectMany(allForwards, "Select forwards to start", func(f models.ForwardEntity) string {
-				return fmt.Sprintf("%d - %s:%d", f.ID, f.TargetName, f.LocalPort)
+				return fmt.Sprintf("%s.%s.%s:%d ➡️ localhost:%d", f.ContextName, f.Namespace, f.TargetName, f.TargetPort, f.LocalPort)
 			})
 
 			if !ok || len(selectedForwards) == 0 {
@@ -82,6 +82,8 @@ func runStart(cmd *cobra.Command, args []string) {
 
 		}
 	}
+
+	// Create two spinners with their own writers
 
 	for _, tmpFwd := range toStart {
 
@@ -124,6 +126,7 @@ func runStart(cmd *cobra.Command, args []string) {
 
 	// Close all stop channels
 	for _, stop := range stopChans {
+
 		close(stop)
 
 	}

@@ -1,6 +1,7 @@
 package ui
 
 import (
+	"fmt"
 	"github.com/davidemaggi/koncierge/internal"
 	"github.com/davidemaggi/koncierge/internal/container"
 	"github.com/pterm/pterm"
@@ -30,13 +31,10 @@ func PrintForwardOverview(fwd internal.ForwardDto, configs map[string]string) {
 	var lg = container.App.Logger
 
 	// Define a map with interesting stuff
-	overview := map[string]any{
-		fwd.PodName: fwd.TargetPort,
-		"localhost": fwd.LocalPort,
-	}
 
 	// Log a debug level message with arguments from the map
-	lg.Get().Info("Forwarding "+pterm.LightMagenta(fwd.TargetName)+" ("+fwd.ForwardType+")", lg.Get().ArgsFromMap(overview))
+
+	pterm.DefaultBasicText.Println(fmt.Sprintf("Forwarding %s.%s.%s:%s ➡️ localhost:%s", pterm.Gray(fwd.ContextName), pterm.Gray(fwd.Namespace), fwd.TargetName, pterm.Green(fwd.TargetPort), pterm.LightBlue(fwd.LocalPort)))
 
 	if len(fwd.AdditionalConfigs) != 0 {
 		lg.Get().Info("The following Configurations are linked to the forward")

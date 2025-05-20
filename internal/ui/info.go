@@ -6,7 +6,7 @@ import (
 )
 
 var (
-	Version = "v1.0.0" // Set during build or manually
+	Version = "v1.0.0-annabelle" // Set during build or manually
 
 )
 
@@ -23,5 +23,18 @@ func PrintInfo() {
 	// Print each line of the text separately centered in the terminal
 
 	pterm.DefaultCenter.WithCenterEachLineSeparately().Println("Proudly made with 🩷 in Italy " + pterm.BgGreen.Sprint(block) + pterm.BgLightWhite.Sprint(block) + pterm.BgRed.Sprint(block))
+
+	var t string = `
+       &&&&&&&
+      &&(+.+)&&
+      ___\=/___
+     (|_ ~~~ _|)
+        )___(
+      /'     '\
+     ~~~~~~~~~~~
+     '~//~~~\\~'
+      /_)   (_\`
+
+	pterm.DefaultCenter.Println(t)
 
 }
