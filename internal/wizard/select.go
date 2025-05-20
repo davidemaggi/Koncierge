@@ -1,6 +1,7 @@
 package wizard
 
 import (
+	"atomicgo.dev/keyboard/keys"
 	"github.com/pterm/pterm"
 )
 
@@ -46,6 +47,8 @@ func SelectMany[T any](items []T, label string, getKey func(T) string) ([]T, boo
 	selectedKeys, err := pterm.DefaultInteractiveMultiselect.
 		WithOptions(options).
 		WithDefaultText(label).
+		WithKeyConfirm(keys.Enter).
+		WithKeySelect(keys.Space).
 		Show()
 
 	if err != nil {
