@@ -5,6 +5,7 @@ import (
 	"github.com/davidemaggi/koncierge/internal/db"
 	"github.com/davidemaggi/koncierge/internal/k8s"
 	"github.com/davidemaggi/koncierge/internal/repositories/forwardRepository"
+	"github.com/davidemaggi/koncierge/internal/ui"
 	"github.com/davidemaggi/koncierge/internal/wizard"
 	"github.com/spf13/cobra"
 	"os"
@@ -13,10 +14,9 @@ import (
 var FwdAddCmd = &cobra.Command{
 	Use:     "add",
 	Aliases: []string{"fwd add"},
-	Short:   "Add a new port-forward",
-	Long: `Add a new port-forward to your list, you can even store related secrets and config map... 
-As a dev one of the most tedious activities is to find out that a password changed and do the walk of shame on the cluster...`,
-	Run: runAdd,
+	Short:   internal.FORWARD_ADD_SHORT,
+	Long:    internal.FORWARD_ADD_DESCRIPTION,
+	Run:     runAdd,
 }
 
 func init() {
@@ -38,6 +38,8 @@ func runAdd(cmd *cobra.Command, args []string) {
 	_ = args
 
 	fwdRepo := forwardRepository.NewForwardRepository(db.GetDB())
+
+	ui.PrintCommandHeader(internal.FORWARD_ADD_SHORT, internal.FORWARD_ADD_DESCRIPTION)
 
 	fwd := wizard.BuildForward()
 

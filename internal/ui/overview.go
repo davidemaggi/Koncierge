@@ -7,6 +7,24 @@ import (
 	"os"
 )
 
+func PrintCommandHeader(name string, description string) {
+
+	var lg = container.App.Logger
+	lg.Get().Info("Koncierge: " + Version)
+	lg.Get().Info(name + ": " + description)
+
+}
+
+func PrintCurrentStatus(currentConfig string, currentCtx string, currentNs string) {
+
+	var lg = container.App.Logger
+
+	lg.Get().Info("Current KubeConfig: " + pterm.Green(currentConfig))
+	lg.Get().Info("Current Context: " + pterm.Green(currentCtx))
+	lg.Get().Info("Default Namespace: " + pterm.Green(currentNs))
+
+}
+
 func PrintForwardOverview(fwd internal.ForwardDto, configs map[string]string) {
 
 	var lg = container.App.Logger

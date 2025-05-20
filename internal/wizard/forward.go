@@ -6,6 +6,7 @@ import (
 	"github.com/davidemaggi/koncierge/internal/config"
 	"github.com/davidemaggi/koncierge/internal/container"
 	"github.com/davidemaggi/koncierge/internal/k8s"
+	"github.com/davidemaggi/koncierge/internal/ui"
 	"github.com/pterm/pterm"
 	"os"
 	"strconv"
@@ -18,6 +19,7 @@ func BuildForward() internal.ForwardDto {
 
 	ret.KubeconfigPath = config.KubeConfigFile
 	ret.ContextName = config.KubeContext
+
 	kubeService, _ := k8s.ConnectToClusterAndContext(config.KubeConfigFile, config.KubeContext)
 	spaces, err := kubeService.GetAllNameSpaces()
 
@@ -26,6 +28,8 @@ func BuildForward() internal.ForwardDto {
 	}
 
 	current := k8s.GetCurrentNamespaceForContext(config.KubeConfigFile, config.KubeContext)
+
+	ui.PrintCurrentStatus(ret.KubeconfigPath, ret.ContextName, current)
 
 	selNamespace, ok := SelectOne(spaces, "Select a namespace", func(f string) string {
 		return f

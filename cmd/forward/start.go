@@ -89,7 +89,7 @@ func runStart(cmd *cobra.Command, args []string) {
 
 		kubeService, err := k8s.ConnectToClusterAndContext(tmpFwd.KubeConfig.KubeconfigPath, tmpFwd.ContextName)
 
-		fwd.PodName, _ = kubeService.GetFirstPodForService(allForwards[0].Namespace, allForwards[0].TargetName)
+		fwd.PodName, _ = kubeService.GetFirstPodForService(tmpFwd.Namespace, tmpFwd.TargetName)
 
 		stop, ready, err := kubeService.StartPortForward(fwd)
 		if err != nil {

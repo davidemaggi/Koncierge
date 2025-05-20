@@ -52,14 +52,3 @@ type ServicePortDto struct {
 	PodPort     int32
 	PodName     string
 }
-
-const (
-	ForwardPod     = "📦 Pod"
-	ForwardService = "🌐 Service"
-
-	ConfigTypeSecret = "🔑 Secret"
-	ConfigTypeMap    = "🔧 ConfigMap"
-
-	BoolYes = "✅ Yes"
-	BoolNo  = "🛑 No"
-)
