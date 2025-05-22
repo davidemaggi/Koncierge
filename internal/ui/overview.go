@@ -34,10 +34,19 @@ func PrintForwardOverview(fwd internal.ForwardDto, configs map[string]string) {
 
 	// Log a debug level message with arguments from the map
 
-	pterm.DefaultBasicText.Println(fmt.Sprintf("Forwarding %s.%s.%s:%s ➡️ localhost:%s", pterm.Gray(fwd.ContextName), pterm.Gray(fwd.Namespace), fwd.TargetName, pterm.Green(fwd.TargetPort), pterm.LightBlue(fwd.LocalPort)))
+	pterm.DefaultBasicText.Println(fmt.Sprintf("%s.%s.%s:%s ➡️ localhost:%s", pterm.Gray(fwd.ContextName), pterm.Gray(fwd.Namespace), fwd.TargetName, pterm.Green(fwd.TargetPort), pterm.LightBlue(fwd.LocalPort)))
+
+	tableData := pterm.TableData{
+		{"KubeConfig", fwd.KubeconfigPath},
+		{"Context", fwd.ContextName},
+		{"Forward", fmt.Sprintf("%s.%s:%s", pterm.Gray(fwd.Namespace), fwd.TargetName, pterm.Green(fwd.TargetPort))},
+		{"", fmt.Sprintf("localhost:%s", pterm.LightBlue(fwd.LocalPort))},
+	}
+
+	_ = pterm.DefaultTable.WithBoxed().WithData(tableData).Render()
 
 	if len(fwd.AdditionalConfigs) != 0 {
-		lg.Get().Info("The following Configurations are linked to the forward")
+		//lg.Get().Trace("The following Configurations are linked to the forward")
 
 		tableData1 := pterm.TableData{
 			{"Type", "Name", "Value"},
@@ -49,17 +58,17 @@ func PrintForwardOverview(fwd internal.ForwardDto, configs map[string]string) {
 
 				tmpStr := additionalConf.Name + "." + value
 
-				tableData1 = append(tableData1, []string{additionalConf.ConfigType, tmpStr, configs[tmpStr]})
+				tableData = append(tableData1, []string{fmt.Sprintf("%s %s", additionalConf.ConfigType, tmpStr), configs[tmpStr]})
 			}
 
 		}
 
 		// Create a table with a header and the defined data, then render it
-		err := pterm.DefaultTable.WithHasHeader().WithData(tableData1).Render()
+		err := pterm.DefaultTable.WithBoxed().WithData(tableData).Render()
 		if err != nil {
 			os.Exit(1)
 		}
-
+		_ = lg
 	}
 
 }
