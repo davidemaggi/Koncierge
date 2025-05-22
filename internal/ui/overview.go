@@ -39,14 +39,14 @@ func PrintForwardOverview(fwd internal.ForwardDto, configs map[string]string) {
 	tableData := pterm.TableData{
 		{"KubeConfig", fwd.KubeconfigPath},
 		{"Context", fwd.ContextName},
-		{"Forward", fmt.Sprintf("%s.%s:%s", pterm.Gray(fwd.Namespace), fwd.TargetName, pterm.Green(fwd.TargetPort))},
-		{"➡️", fmt.Sprintf("localhost:%s", pterm.LightBlue(fwd.LocalPort))},
+		{"Remote", fmt.Sprintf("%s.%s:%s", pterm.Gray(fwd.Namespace), fwd.TargetName, pterm.Green(fwd.TargetPort))},
+		{"Local", fmt.Sprintf("localhost:%s", pterm.LightBlue(fwd.LocalPort))},
 	}
 
 	_ = pterm.DefaultTable.WithBoxed().WithData(tableData).Render()
 
 	if len(fwd.AdditionalConfigs) != 0 {
-		tableData = append(tableData, []string{"Additional Config", "Values"})
+		tableData = append(tableData, []string{"", ""})
 
 		for _, additionalConf := range fwd.AdditionalConfigs {
 

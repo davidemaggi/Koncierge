@@ -25,7 +25,7 @@ func FromForwardEntity(entity models.ForwardEntity) ForwardDto {
 	ret.ForwardType = entity.ForwardType
 	ret.ContextName = entity.ContextName
 	ret.Namespace = entity.Namespace
-	//ret.KubeconfigPath = entity.
+	ret.KubeconfigPath = entity.KubeConfig.KubeconfigPath
 	ret.LocalPort = entity.LocalPort
 
 	for _, config := range entity.AdditionalConfigs {
