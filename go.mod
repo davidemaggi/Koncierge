@@ -3,16 +3,19 @@ module github.com/davidemaggi/koncierge
 go 1.24.2
 
 require (
+	atomicgo.dev/keyboard v0.2.9
 	github.com/pterm/pterm v0.12.80
 	github.com/spf13/cobra v1.9.1
 	golang.org/x/net v0.38.0
+	gorm.io/driver/sqlite v1.5.7
+	gorm.io/gorm v1.26.1
 	k8s.io/apimachinery v0.33.0
 	k8s.io/client-go v0.33.0
+	modernc.org/sqlite v1.37.0
 )
 
 require (
 	atomicgo.dev/cursor v0.2.0 // indirect
-	atomicgo.dev/keyboard v0.2.9 // indirect
 	atomicgo.dev/schedule v0.1.0 // indirect
 	github.com/containerd/console v1.0.3 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
@@ -61,8 +64,6 @@ require (
 	gopkg.in/evanphx/json-patch.v4 v4.12.0 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
-	gorm.io/driver/sqlite v1.5.7 // indirect
-	gorm.io/gorm v1.26.1 // indirect
 	k8s.io/api v0.33.0 // indirect
 	k8s.io/klog/v2 v2.130.1 // indirect
 	k8s.io/kube-openapi v0.0.0-20250318190949-c8a335a9a2ff // indirect
@@ -70,7 +71,6 @@ require (
 	modernc.org/libc v1.62.1 // indirect
 	modernc.org/mathutil v1.7.1 // indirect
 	modernc.org/memory v1.9.1 // indirect
-	modernc.org/sqlite v1.37.0 // indirect
 	sigs.k8s.io/json v0.0.0-20241010143419-9aa6b5e7a4b3 // indirect
 	sigs.k8s.io/randfill v1.0.0 // indirect
 	sigs.k8s.io/structured-merge-diff/v4 v4.6.0 // indirect
