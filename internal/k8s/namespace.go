@@ -43,10 +43,10 @@ func (k *KubeService) GetAllNameSpaces() ([]string, error) {
 func SetDefaultNamespaceForContext(kubeConfig string, contextName string, namespace string) error {
 	var logger = container.App.Logger
 	rawConfig := clientcmd.GetConfigFromFileOrDie(kubeConfig)
-	// Get the context to update
+	// Get the ctx to update
 	ctx, exists := rawConfig.Contexts[contextName]
 	if !exists {
-		logger.Error("Could not find context "+pterm.Red(contextName)+"in "+pterm.Red(kubeConfig), nil)
+		logger.Error("Could not find ctx "+pterm.Red(contextName)+"in "+pterm.Red(kubeConfig), nil)
 		os.Exit(1)
 
 	}

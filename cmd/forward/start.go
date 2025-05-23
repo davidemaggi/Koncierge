@@ -21,8 +21,8 @@ import (
 var FwdStartCmd = &cobra.Command{
 	Use:     "start",
 	Aliases: []string{"start"},
-	Short:   "Start one or more of your saved forwards",
-	Long:    `Well, you saved your forwards, here you can start them easily`,
+	Short:   internal.FORWARD_START_SHORT,
+	Long:    internal.FORWARD_START_DESCRIPTION,
 	Run:     runStart,
 }
 
@@ -37,6 +37,7 @@ func init() {
 func runStart(cmd *cobra.Command, args []string) {
 	_ = cmd
 	_ = args
+	ui.PrintCommandHeader(internal.FORWARD_START_SHORT, internal.FORWARD_START_DESCRIPTION)
 
 	var (
 		stopChans  []chan struct{}

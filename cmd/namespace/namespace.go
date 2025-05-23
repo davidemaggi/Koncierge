@@ -1,9 +1,11 @@
 package namespace
 
 import (
+	"github.com/davidemaggi/koncierge/internal"
 	"github.com/davidemaggi/koncierge/internal/config"
 	"github.com/davidemaggi/koncierge/internal/container"
 	"github.com/davidemaggi/koncierge/internal/k8s"
+	"github.com/davidemaggi/koncierge/internal/ui"
 	"github.com/davidemaggi/koncierge/internal/wizard"
 	"github.com/pterm/pterm"
 	"os"
@@ -14,8 +16,8 @@ import (
 var NsCmd = &cobra.Command{
 	Use:     "namespace",
 	Aliases: []string{"ns"},
-	Short:   "Change the current namespace",
-	Long:    `Change the current namespace for the desired KubeConfig`,
+	Short:   internal.NAMESPACE_SHORT,
+	Long:    internal.NAMESPACE_DESCRIPTION,
 	Run:     runCommand,
 }
 
@@ -36,6 +38,7 @@ func runCommand(cmd *cobra.Command, args []string) {
 
 	_ = cmd
 	_ = args
+	ui.PrintCommandHeader(internal.NAMESPACE_SHORT, internal.NAMESPACE_DESCRIPTION)
 
 	logger := container.App.Logger
 	kubeService, err := k8s.ConnectToClusterAndContext(config.KubeConfigFile, config.KubeContext)

@@ -1,10 +1,12 @@
-package context
+package ctx
 
 import (
 	"fmt"
+	"github.com/davidemaggi/koncierge/internal"
 	"github.com/davidemaggi/koncierge/internal/config"
 	"github.com/davidemaggi/koncierge/internal/container"
 	"github.com/davidemaggi/koncierge/internal/k8s"
+	"github.com/davidemaggi/koncierge/internal/ui"
 	"github.com/davidemaggi/koncierge/internal/wizard"
 	"github.com/pterm/pterm"
 
@@ -14,13 +16,13 @@ import (
 var CtxCmd = &cobra.Command{
 	Use:     "context",
 	Aliases: []string{"ctx"},
-	Short:   "Change the Current Context",
-	Long:    `Here you can change the current context for the desired KubeConfig`,
+	Short:   internal.CONTEXT_SHORT,
+	Long:    internal.CONTEXT_DESCRIPTION,
 	Run:     runCommand,
 }
 
 func init() {
-
+	CtxCmd.AddCommand(configMergeCmd)
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
@@ -36,6 +38,7 @@ func runCommand(cmd *cobra.Command, args []string) {
 
 	_ = cmd
 	_ = args
+	ui.PrintCommandHeader(internal.CONTEXT_SHORT, internal.CONTEXT_DESCRIPTION)
 
 	logger := container.App.Logger
 
@@ -44,7 +47,7 @@ func runCommand(cmd *cobra.Command, args []string) {
 	contexts := k8s.GetAllContexts(config.KubeConfigFile)
 	current := kubeService.GetCurrentContextAsString()
 
-	newCtx, _ := wizard.SelectOne(contexts, "Select the new context", func(f string) string {
+	newCtx, _ := wizard.SelectOne(contexts, "Select the new ctx", func(f string) string {
 		return fmt.Sprintf("%s", f)
 	}, current)
 

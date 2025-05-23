@@ -1,6 +1,7 @@
 package logger
 
 import (
+	"fmt"
 	"github.com/pterm/pterm"
 )
 
@@ -67,4 +68,9 @@ func (l *Logger) MoreTrace(msg string, args map[string]any) {
 }
 func (l *Logger) MoreWarn(msg string, args map[string]any) {
 	l.logger.Warn(msg, l.logger.ArgsFromMap(args))
+}
+
+func (l *Logger) Success(msg string) {
+	pterm.DefaultBasicText.Println(
+		fmt.Sprintf("✅ Success: %s", msg))
 }

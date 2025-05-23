@@ -1,6 +1,7 @@
 package forward
 
 import (
+	"github.com/davidemaggi/koncierge/internal"
 	"github.com/davidemaggi/koncierge/internal/config"
 	"github.com/davidemaggi/koncierge/internal/container"
 	"github.com/davidemaggi/koncierge/internal/k8s"
@@ -16,14 +17,15 @@ import (
 var FwdCmd = &cobra.Command{
 	Use:     "forward",
 	Aliases: []string{"fwd"},
-	Short:   "Just start a new forward",
-	Long:    `A wizard driven port-forward nobody wants to remember commands.`,
+	Short:   internal.FORWARD_SHORT,
+	Long:    internal.FORWARD_DESCRIPTION,
 	Run:     runCommand,
 }
 
 func init() {
 	FwdCmd.AddCommand(FwdAddCmd)
 	FwdCmd.AddCommand(FwdStartCmd)
+	FwdCmd.AddCommand(FwdDeleteCmd)
 
 	// Here you will define your flags and configuration settings.
 
@@ -40,6 +42,7 @@ func runCommand(cmd *cobra.Command, args []string) {
 
 	_ = cmd
 	_ = args
+	ui.PrintCommandHeader(internal.FORWARD_SHORT, internal.FORWARD_DESCRIPTION)
 
 	logger := container.App.Logger
 	kubeService, err := k8s.ConnectToCluster(config.KubeConfigFile)

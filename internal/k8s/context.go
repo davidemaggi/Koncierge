@@ -1,9 +1,11 @@
 package k8s
 
 import (
+	"fmt"
 	"github.com/davidemaggi/koncierge/internal/container"
 	"github.com/pterm/pterm"
 	"k8s.io/client-go/tools/clientcmd"
+	"k8s.io/client-go/tools/clientcmd/api"
 	"os"
 )
 
@@ -28,11 +30,11 @@ func GetAllContexts(kubeconfig string) []string {
 
 	config := clientcmd.GetConfigFromFileOrDie(kubeconfig)
 
-	logger.Info("Retrieving Contexts from " + pterm.LightMagenta(kubeconfig))
+	logger.Trace("Retrieving Contexts from " + pterm.LightMagenta(kubeconfig))
 
 	if config != nil {
 
-		logger.Info("Current Context is " + pterm.LightMagenta(config.CurrentContext))
+		logger.Trace("Current Context is " + pterm.LightMagenta(config.CurrentContext))
 
 		contextNames := make(map[string]any)
 
@@ -40,7 +42,7 @@ func GetAllContexts(kubeconfig string) []string {
 			contextNames[key] = "Current Namespace: " + pterm.LightMagenta(ctx.Namespace)
 		}
 
-		logger.MoreInfo("Other Contexts", contextNames)
+		logger.MoreTrace("Other Contexts", contextNames)
 
 		var options []string
 
@@ -78,4 +80,63 @@ func SwitchContext(ctx, kubeconfig string) (err error) {
 	}
 
 	return nil
+}
+
+func MergeContexts(contextsToCopy []string, fromPath string, toPath string) {
+
+	logger := container.App.Logger
+
+	sourceConfig, err := clientcmd.LoadFromFile(fromPath)
+	if err != nil {
+		logger.Error("Cannot load Source config file: "+fromPath, err)
+	}
+
+	targetConfig, err := clientcmd.LoadFromFile(toPath)
+	if err != nil {
+		// If target config doesn't exist, initialize a new one
+		logger.Warn("Target Config doesn't exist, creating: " + fromPath)
+
+		if os.IsNotExist(err) {
+			targetConfig = api.NewConfig()
+		} else {
+			logger.Error("Cannot load Target config file: "+fromPath, err)
+		}
+	}
+
+	for _, ctxName := range contextsToCopy {
+		ctx, ok := sourceConfig.Contexts[ctxName]
+		if !ok {
+			logger.Warn(fmt.Sprintf("Context %q not found in source config\n", ctxName))
+
+			continue
+		}
+
+		clusterName := ctx.Cluster
+		authInfoName := ctx.AuthInfo
+
+		// Copy context
+		targetConfig.Contexts[ctxName] = ctx
+
+		// Copy cluster
+		if cluster, ok := sourceConfig.Clusters[clusterName]; ok {
+			targetConfig.Clusters[clusterName] = cluster
+		} else {
+			logger.Warn(fmt.Sprintf("Warning: Cluster %q for context %q not found\n", clusterName, ctxName))
+		}
+
+		// Copy authInfo
+		if authInfo, ok := sourceConfig.AuthInfos[authInfoName]; ok {
+			targetConfig.AuthInfos[authInfoName] = authInfo
+		} else {
+			logger.Warn(fmt.Sprintf("Warning: AuthInfo %q for context %q not found\n", authInfoName, ctxName))
+
+		}
+	}
+
+	if err := clientcmd.WriteToFile(*targetConfig, toPath); err != nil {
+		logger.Error("Error Saving Target Config", err)
+		os.Exit(1)
+	}
+	logger.Success("Contexts copied successfully.")
+
 }

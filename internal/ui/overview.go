@@ -11,8 +11,8 @@ import (
 func PrintCommandHeader(name string, description string) {
 
 	var lg = container.App.Logger
-	lg.Get().Info("Koncierge: " + Version)
-	lg.Get().Info(name + ": " + description)
+	lg.Get().Trace("Koncierge: " + Version)
+	lg.Get().Trace(name + ": " + description)
 
 }
 
@@ -43,7 +43,7 @@ func PrintForwardOverview(fwd internal.ForwardDto, configs map[string]string) {
 		{"Local", fmt.Sprintf("localhost:%s", pterm.LightBlue(fwd.LocalPort))},
 	}
 
-	_ = pterm.DefaultTable.WithBoxed().WithData(tableData).Render()
+	//_ = pterm.DefaultTable.WithBoxed().WithData(tableData).Render()
 
 	if len(fwd.AdditionalConfigs) != 0 {
 		tableData = append(tableData, []string{"", ""})
@@ -60,11 +60,11 @@ func PrintForwardOverview(fwd internal.ForwardDto, configs map[string]string) {
 		}
 
 		// Create a table with a header and the defined data, then render it
-		err := pterm.DefaultTable.WithBoxed().WithData(tableData).Render()
-		if err != nil {
-			os.Exit(1)
-		}
-		_ = lg
-	}
 
+	}
+	err := pterm.DefaultTable.WithBoxed().WithData(tableData).Render()
+	if err != nil {
+		os.Exit(1)
+	}
+	_ = lg
 }

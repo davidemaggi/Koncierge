@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"github.com/davidemaggi/koncierge/cmd/context"
+	"github.com/davidemaggi/koncierge/cmd/ctx"
 	"github.com/davidemaggi/koncierge/cmd/forward"
 	"github.com/davidemaggi/koncierge/cmd/namespace"
 	"github.com/davidemaggi/koncierge/internal/config"
@@ -28,12 +28,14 @@ You are lazy, I'm lazy lets get lazy together and let Koncierge do the dirty job
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
 		// Initialize service container once
 		container.Init(config.IsVerbose)
+		config.KubeContext = k8s.GetCurrentContextAsStringFromConfig(config.KubeConfigFile)
 	},
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
+
 	err := rootCmd.Execute()
 	if err != nil {
 		os.Exit(1)
@@ -60,13 +62,12 @@ func init() {
 	rootCmd.PersistentFlags().StringVarP(&config.KubeConfigFile, "kubeconfig", "f", startFile, "The Kubeconfig file to use")
 
 	startCtx := k8s.GetCurrentContextAsStringFromConfig(config.KubeConfigFile)
-	rootCmd.PersistentFlags().StringVarP(&config.KubeContext, "context", "c", startCtx, "The preferred Context to use")
+	rootCmd.PersistentFlags().StringVarP(&config.KubeContext, "ctx", "c", startCtx, "The preferred Context to use")
 
 	rootCmd.AddCommand(forward.FwdCmd)
 
 	rootCmd.AddCommand(namespace.NsCmd)
-	rootCmd.AddCommand(ConfigCmd)
-	rootCmd.AddCommand(context.CtxCmd)
+	rootCmd.AddCommand(ctx.CtxCmd)
 	rootCmd.AddCommand(InfoCmd)
 
 }
