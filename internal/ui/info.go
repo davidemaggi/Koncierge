@@ -1,13 +1,9 @@
 package ui
 
 import (
+	"github.com/davidemaggi/koncierge/internal/version"
 	"github.com/pterm/pterm"
 	"github.com/pterm/pterm/putils"
-)
-
-var (
-	Version = "v1.0.0-annabelle" // Set during build or manually
-
 )
 
 func PrintInfo() {
@@ -18,7 +14,7 @@ func PrintInfo() {
 	s, _ := pterm.DefaultBigText.WithLetters(putils.LettersFromString("Koncierge")).Srender()
 
 	// Print the BigLetters 's' centered in the terminal
-	pterm.DefaultCenter.Println(s + Version)
+	pterm.DefaultCenter.Println(s + version.Version() + " - " + version.Name())
 	block := "  "
 	// Print each line of the text separately centered in the terminal
 

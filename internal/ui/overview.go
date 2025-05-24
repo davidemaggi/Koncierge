@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/davidemaggi/koncierge/internal"
 	"github.com/davidemaggi/koncierge/internal/container"
+	"github.com/davidemaggi/koncierge/internal/version"
 	"github.com/pterm/pterm"
 	"os"
 )
@@ -11,7 +12,7 @@ import (
 func PrintCommandHeader(name string, description string) {
 
 	var lg = container.App.Logger
-	lg.Get().Trace("Koncierge: " + Version)
+	lg.Get().Trace("Koncierge: " + version.Version() + " - " + version.Name())
 	lg.Get().Trace(name + ": " + description)
 
 }
