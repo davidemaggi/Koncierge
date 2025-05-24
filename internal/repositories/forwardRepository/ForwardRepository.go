@@ -71,15 +71,19 @@ func (r *GormForwardRepository) CreateFromDto(fwd internal.ForwardDto) {
 		err = db.GetDB().Create(newFwd).Error
 
 		if err != nil {
+			logger.Failure("Cannot create Forward")
+
 			logger.Error("Cannot create Forward", err)
+			os.Exit(1)
 
 		} else {
 			logger.Info("Forward created")
 		}
 
 	} else {
+		logger.Attention("The forward entity already exists")
 		logger.Warn("The forward entity already exists")
-
+		os.Exit(1)
 	}
 
 }

@@ -2,6 +2,7 @@ package forward
 
 import (
 	"github.com/davidemaggi/koncierge/internal"
+	"github.com/davidemaggi/koncierge/internal/container"
 	"github.com/davidemaggi/koncierge/internal/db"
 	"github.com/davidemaggi/koncierge/internal/k8s"
 	"github.com/davidemaggi/koncierge/internal/repositories/forwardRepository"
@@ -36,6 +37,8 @@ func runAdd(cmd *cobra.Command, args []string) {
 
 	_ = cmd
 	_ = args
+
+	logger := container.App.Logger
 
 	fwdRepo := forwardRepository.NewForwardRepository(db.GetDB())
 
@@ -117,4 +120,7 @@ func runAdd(cmd *cobra.Command, args []string) {
 
 	}
 	fwdRepo.CreateFromDto(fwd)
+
+	logger.Success("Forward Created!")
+
 }

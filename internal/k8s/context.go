@@ -137,6 +137,69 @@ func MergeContexts(contextsToCopy []string, fromPath string, toPath string) {
 		logger.Error("Error Saving Target Config", err)
 		os.Exit(1)
 	}
-	logger.Success("Contexts copied successfully.")
+
+}
+
+func RemoveContexts(contextsToRemove []string, kubeconfigPath string) {
+
+	logger := container.App.Logger
+
+	config, err := clientcmd.LoadFromFile(kubeconfigPath)
+	if err != nil {
+		logger.Error("Cannot load Source config file: "+kubeconfigPath, err)
+		os.Exit(1)
+	}
+
+	// Track if current context is being removed
+	removingCurrentContext := false
+	for _, ctxName := range contextsToRemove {
+		if _, exists := config.Contexts[ctxName]; exists {
+			delete(config.Contexts, ctxName)
+			if config.CurrentContext == ctxName {
+				removingCurrentContext = true
+			}
+		}
+	}
+
+	// If current context was removed, set to any remaining context (if available)
+	if removingCurrentContext {
+		config.CurrentContext = ""
+		for name := range config.Contexts {
+			config.CurrentContext = name
+			logger.Warn("Since you removed the current context a new one has been set: " + pterm.Green(config.CurrentContext))
+
+			break
+		}
+	}
+
+	// Track used clusters and users
+	usedClusters := make(map[string]bool)
+	usedAuthInfos := make(map[string]bool)
+
+	for _, ctx := range config.Contexts {
+		usedClusters[ctx.Cluster] = true
+		usedAuthInfos[ctx.AuthInfo] = true
+	}
+
+	// Remove unused clusters
+	for name := range config.Clusters {
+		if !usedClusters[name] {
+			delete(config.Clusters, name)
+		}
+	}
+
+	// Remove unused authInfos
+	for name := range config.AuthInfos {
+		if !usedAuthInfos[name] {
+			delete(config.AuthInfos, name)
+		}
+	}
+
+	// Save the updated config
+	if err := clientcmd.WriteToFile(*config, kubeconfigPath); err != nil {
+		logger.Error("Error Removing Target Config", err)
+		os.Exit(1)
+
+	}
 
 }

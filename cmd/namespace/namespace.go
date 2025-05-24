@@ -44,6 +44,7 @@ func runCommand(cmd *cobra.Command, args []string) {
 	kubeService, err := k8s.ConnectToClusterAndContext(config.KubeConfigFile, config.KubeContext)
 
 	if err != nil {
+		logger.Failure("Cannot Connect to cluster")
 		logger.Error("Cannot Connect to cluster", err)
 		os.Exit(1)
 	}
@@ -51,6 +52,7 @@ func runCommand(cmd *cobra.Command, args []string) {
 	spaces, err := kubeService.GetAllNameSpaces()
 
 	if err != nil {
+		logger.Failure("Error retrieving namespaces")
 		logger.Error("Error retrieving namespaces", err)
 		os.Exit(1)
 	}
@@ -68,5 +70,7 @@ func runCommand(cmd *cobra.Command, args []string) {
 	if err != nil {
 		os.Exit(1)
 	}
+
+	logger.Success("Switched  to " + pterm.Green(newNs))
 
 }

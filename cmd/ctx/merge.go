@@ -12,11 +12,11 @@ import (
 	"os"
 )
 
-var configMergeCmd = &cobra.Command{
+var contextmergeCmd = &cobra.Command{
 	Use:     "merge",
-	Aliases: []string{},
-	Short:   internal.CONFIG_MERGE_SHORT,
-	Long:    internal.CONFIG_MERGE_DESCRIPTION,
+	Aliases: []string{"join", "extract"},
+	Short:   internal.CONTEXT_MERGE_SHORT,
+	Long:    internal.CONTEXT_MERGE_DESCRIPTION,
 	Run:     runMerge,
 }
 
@@ -24,14 +24,14 @@ var sourceConfig string
 
 func init() {
 
-	configMergeCmd.Flags().StringVar(&sourceConfig, "sourceConfig", "sc", "The Source KubeConfig file")
+	contextmergeCmd.Flags().StringVar(&sourceConfig, "sourceConfig", "sc", "The Source KubeConfig file")
 
 }
 
 func runMerge(cmd *cobra.Command, args []string) {
 	_ = cmd
 	_ = args
-	ui.PrintCommandHeader(internal.CONFIG_MERGE_SHORT, internal.CONFIG_MERGE_DESCRIPTION)
+	ui.PrintCommandHeader(internal.CONTEXT_MERGE_SHORT, internal.CONTEXT_MERGE_DESCRIPTION)
 
 	logger := container.App.Logger
 
@@ -49,6 +49,8 @@ func runMerge(cmd *cobra.Command, args []string) {
 
 	if len(selectedSource) == 0 {
 		logger.Warn("No Contexts selected.")
+		logger.Attention("No Contexts selected.")
+
 		os.Exit(0)
 
 	}
@@ -58,7 +60,7 @@ func runMerge(cmd *cobra.Command, args []string) {
 	if result {
 		k8s.MergeContexts(selectedSource, sourceConfig, config.KubeConfigFile)
 	}
-
+	logger.Success("Contexts copied successfully!")
 	_ = logger
 	_ = TargetContexts
 	_ = SourceContexts

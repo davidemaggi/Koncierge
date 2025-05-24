@@ -7,6 +7,7 @@ import (
 	"github.com/davidemaggi/koncierge/internal/k8s"
 	"github.com/davidemaggi/koncierge/internal/ui"
 	"github.com/davidemaggi/koncierge/internal/wizard"
+	"github.com/pterm/pterm"
 	"github.com/spf13/cobra"
 	"golang.org/x/net/context"
 	"os"
@@ -48,6 +49,7 @@ func runCommand(cmd *cobra.Command, args []string) {
 	kubeService, err := k8s.ConnectToCluster(config.KubeConfigFile)
 
 	if err != nil {
+		logger.Failure("Cannot Connect to cluster")
 		logger.Error("Cannot Connect to cluster", err)
 		return
 	}
@@ -56,6 +58,7 @@ func runCommand(cmd *cobra.Command, args []string) {
 
 	stop, ready, err := kubeService.StartPortForward(fwd)
 	if err != nil {
+		logger.Failure("Error starting port forward")
 		logger.Error("Error starting port forward", err)
 		os.Exit(1)
 	}
@@ -63,7 +66,7 @@ func runCommand(cmd *cobra.Command, args []string) {
 	<-ready
 	ui.PrintForwardOverview(fwd, nil)
 
-	logger.Info("Press Ctrl+C to stop...")
+	pterm.DefaultBasicText.Println("⌨️ Press Ctrl+C to stop...")
 
 	ctx, stopSig := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer stopSig()
@@ -71,7 +74,7 @@ func runCommand(cmd *cobra.Command, args []string) {
 	// Wait for Ctrl+C
 	<-ctx.Done()
 
-	logger.Info("Shutting down port-forward...")
+	pterm.DefaultBasicText.Println("🔌 Shutting down port-forward...")
 
 	close(stop)
 

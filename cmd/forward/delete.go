@@ -42,11 +42,13 @@ func runDelete(cmd *cobra.Command, args []string) {
 	allForwards, err := forwardRepo.GetAll()
 
 	if err != nil {
+		logger.Failure("Error Retrieving Forward List")
 		logger.Error("Error Retrieving Forward List", err)
 		os.Exit(1)
 	}
 
 	if len(allForwards) == 0 {
+		logger.Attention("There are no forward entries in DB")
 		logger.Warn("There are no forward entries in DB")
 		os.Exit(1)
 
@@ -66,6 +68,7 @@ func runDelete(cmd *cobra.Command, args []string) {
 			})
 
 			if !ok || len(selectedForwards) == 0 {
+				logger.Attention("No forwards selected.")
 				logger.Warn("No forwards selected.")
 				os.Exit(0)
 
@@ -82,8 +85,10 @@ func runDelete(cmd *cobra.Command, args []string) {
 		for _, dlt := range toDelete {
 			err := forwardRepo.Delete(dlt.ID)
 			if err != nil {
+				logger.Failure("Forward Deletion failed.")
 				logger.Error("Forward Deletion failed.", err)
 
+				os.Exit(1)
 			}
 		}
 	}

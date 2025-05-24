@@ -10,6 +10,7 @@ import (
 	"github.com/davidemaggi/koncierge/internal/ui"
 	"github.com/davidemaggi/koncierge/internal/wizard"
 	"github.com/davidemaggi/koncierge/models"
+	"github.com/pterm/pterm"
 	"github.com/spf13/cobra"
 	"golang.org/x/net/context"
 	"os"
@@ -50,11 +51,13 @@ func runStart(cmd *cobra.Command, args []string) {
 	allForwards, err := forwardRepo.GetAll()
 
 	if err != nil {
+		logger.Failure("Error Retrieving Forward List")
 		logger.Error("Error Retrieving Forward List", err)
 		os.Exit(1)
 	}
 
 	if len(allForwards) == 0 {
+		logger.Attention("There are no forward entries in DB")
 		logger.Warn("There are no forward entries in DB")
 		os.Exit(1)
 
@@ -74,6 +77,7 @@ func runStart(cmd *cobra.Command, args []string) {
 			})
 
 			if !ok || len(selectedForwards) == 0 {
+				logger.Attention("No forwards selected.")
 				logger.Warn("No forwards selected.")
 				os.Exit(0)
 
@@ -96,6 +100,7 @@ func runStart(cmd *cobra.Command, args []string) {
 
 		stop, ready, err := kubeService.StartPortForward(fwd)
 		if err != nil {
+			logger.Failure(fmt.Sprintf("Failed to start port forward for %s", fwd.TargetName))
 			logger.Error(fmt.Sprintf("Failed to start port forward for %s", fwd.TargetName), err)
 			os.Exit(1)
 		}
@@ -115,15 +120,15 @@ func runStart(cmd *cobra.Command, args []string) {
 
 	// Wait for all port-forwards to be ready
 	readyGroup.Wait()
-	logger.Info("All port-forwards are active.")
-	logger.Info("Press Ctrl+C to stop...")
+	logger.Success("All port-forwards are active.")
+	pterm.DefaultBasicText.Println("⌨️ Press Ctrl+C to stop...")
 
 	// Wait for signal
 	ctx, stopSig := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer stopSig()
 	<-ctx.Done()
 
-	logger.Info("Shutting down all port-forwards...")
+	pterm.DefaultBasicText.Println("🔌 Shutting down port-forward...")
 
 	// Close all stop channels
 	for _, stop := range stopChans {

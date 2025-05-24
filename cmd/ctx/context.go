@@ -9,6 +9,7 @@ import (
 	"github.com/davidemaggi/koncierge/internal/ui"
 	"github.com/davidemaggi/koncierge/internal/wizard"
 	"github.com/pterm/pterm"
+	"os"
 
 	"github.com/spf13/cobra"
 )
@@ -22,7 +23,8 @@ var CtxCmd = &cobra.Command{
 }
 
 func init() {
-	CtxCmd.AddCommand(configMergeCmd)
+	CtxCmd.AddCommand(contextmergeCmd)
+	CtxCmd.AddCommand(contextDeleteCmd)
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
@@ -55,9 +57,10 @@ func runCommand(cmd *cobra.Command, args []string) {
 	err := k8s.SwitchContext(newCtx, config.KubeConfigFile)
 
 	if err != nil {
-
+		logger.Failure("Error switching to " + pterm.Red(newCtx))
 		logger.Error("Error switching to "+pterm.Red(newCtx), err)
-
+		os.Exit(1)
 	}
+	logger.Success("Switched to " + pterm.LightGreen(newCtx))
 
 }

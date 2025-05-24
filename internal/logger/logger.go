@@ -15,7 +15,7 @@ func (l *Logger) Get() *pterm.Logger {
 
 func NewLogger(isVerbose bool) *Logger {
 
-	lvl := pterm.LogLevelInfo
+	lvl := pterm.LogLevelDisabled
 	if isVerbose {
 
 		lvl = pterm.LogLevelTrace
@@ -31,6 +31,7 @@ func NewLogger(isVerbose bool) *Logger {
 
 func (l *Logger) Info(msg string) {
 	l.logger.Info(msg)
+
 }
 
 func (l *Logger) Warn(msg string) {
@@ -39,7 +40,9 @@ func (l *Logger) Warn(msg string) {
 
 func (l *Logger) Error(msg string, err error) {
 	l.logger.Error(msg)
-	l.logger.Debug(err.Error())
+	if err != nil {
+		l.logger.Debug(err.Error())
+	}
 
 }
 
@@ -72,5 +75,15 @@ func (l *Logger) MoreWarn(msg string, args map[string]any) {
 
 func (l *Logger) Success(msg string) {
 	pterm.DefaultBasicText.Println(
-		fmt.Sprintf("✅ Success: %s", msg))
+		fmt.Sprintf("🎉 %s: %s", pterm.LightGreen("Success"), msg))
+}
+
+func (l *Logger) Failure(msg string) {
+	pterm.DefaultBasicText.Println(
+		fmt.Sprintf("⛔ %s: %s", pterm.LightRed("Failure"), msg))
+}
+
+func (l *Logger) Attention(msg string) {
+	pterm.DefaultBasicText.Println(
+		fmt.Sprintf("⚠️ %s: %s", pterm.LightYellow("Warning"), msg))
 }

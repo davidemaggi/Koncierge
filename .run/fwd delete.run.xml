@@ -2,7 +2,7 @@
   <configuration default="false" name="fwd delete" type="GoApplicationRunConfiguration" factoryName="Go Application">
     <module name="Koncierge" />
     <working_directory value="$PROJECT_DIR$" />
-    <parameters value="forward delete --verbose" />
+    <parameters value="forward delete" />
     <kind value="PACKAGE" />
     <package value="github.com/davidemaggi/koncierge" />
     <directory value="$PROJECT_DIR$" />

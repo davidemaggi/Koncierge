@@ -30,6 +30,9 @@ As a dev one of the most tedious activities is to find out that a password chang
 	NAMESPACE_SHORT       = "Change the current namespace"
 	NAMESPACE_DESCRIPTION = `Change the current namespace for the desired KubeConfig`
 
-	CONFIG_MERGE_SHORT       = "Copy Context to one config to another"
-	CONFIG_MERGE_DESCRIPTION = `Too many projects, too many contexts, put them all together`
+	CONTEXT_MERGE_SHORT       = "Copy Context to one config to another"
+	CONTEXT_MERGE_DESCRIPTION = `Too many projects, too many contexts, put them all together`
+
+	CONTEXT_DELETE_SHORT       = "Remove one or more contexts from you config file"
+	CONTEXT_DELETE_DESCRIPTION = `Too many projects, too many contexts, remove some`
 )
