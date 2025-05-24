@@ -36,5 +36,6 @@ jobs:
           version: '~> v2'
           args: release --clean
         env:
+          WINGET_TOKEN: ${{ secrets.WINGET_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
