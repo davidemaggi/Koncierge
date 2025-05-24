@@ -40,6 +40,26 @@ archives:
     format_overrides:
       - goos: windows
         formats: [zip]
+winget:
+  package: dev.davidemaggi.koncierge
+  publisher: Davide Maggi
+  author: Davide Maggi
+  description: Your faithful assistant to interact with your Kubernetes cluster
+  license: MIT
+  homepage: https://github.com/davidemaggi/Koncierge
+  repo: https://github.com/davidemaggi/Koncierge
+  tags:
+    - go
+    - cli
+    - tools
+    - k8s
+    - kubernetes
+  manifest_version: 1.2.0
+  skip_upload: false
+  fork: davidemaggi/winget-pkgs
+  pull_request:
+    enabled: true
+  token: ${{ secrets.WINGET_TOKEN }}
 
 changelog:
   sort: asc
