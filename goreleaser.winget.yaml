@@ -8,6 +8,9 @@
 
 version: 2
 
+builds:
+  - skip: true
+
 winget:
   - name: koncierge
     publisher: Davide Maggi

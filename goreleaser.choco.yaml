@@ -8,6 +8,9 @@
 
 version: 2
 
+builds:
+  - skip: true
+
 chocolateys:
   - name: koncierge
     summary: Your faithful assistant to interact with your Kubernetes cluster
