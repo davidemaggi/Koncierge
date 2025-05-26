@@ -69,6 +69,28 @@ winget:
 
     skip_upload: false
 
+chocolateys:
+  - name: koncierge
+    summary: Your faithful assistant to interact with your Kubernetes cluster
+    description: |
+        Koncierge is here to be your assistant and your guide managing your k8s cluster.
+        You can manage your Contexts, Namespace, Kubeconfigs and port forwards.
+        You are lazy, I'm lazy — let's get lazy together and let Koncierge do the dirty job.
+    package_source_url: https://github.com/davidemaggi/Koncierge
+    owners: Davide Maggi
+    authors: Davide Maggi
+    project_url: https://github.com/davidemaggi/Koncierge
+    icon_url: https://github.com/davidemaggi/Koncierge/blob/81e793b878cc35abc23824eb7d4365c7f8f64165/logo.png?raw=true
+    license_url: https://github.com/davidemaggi/Koncierge/blob/81e793b878cc35abc23824eb7d4365c7f8f64165/LICENSE
+    require_license_acceptance: false
+    project_source_url: https://github.com/davidemaggi/Koncierge
+    docs_url: https://github.com/davidemaggi/Koncierge
+    bug_tracker_url: https://github.com/davidemaggi/Koncierge/issues
+    tags: go, cli, kubernetes, tools, k8s
+    release_notes: "https://github.com/davidemaggi/Koncierge/releases/tag/v{{ .Version }}"
+    api_key: "{{ .Env.CHOCOLATEY_API_KEY }}"
+    skip_publish: true
+
 
 
 

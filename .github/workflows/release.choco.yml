@@ -1,4 +1,4 @@
-name: Release All
+name: Release Winget
 
 on:
   #push:
@@ -34,10 +34,8 @@ jobs:
           distribution: goreleaser
           # 'latest', 'nightly', or a semver
           version: '~> v2'
-          args: release --clean
+          args: release --clean --skip=build --skip=archive --skip=checksum --skip=announce --skip=validate --skip chocolatey
         env:
-          WINGET_TOKEN: ${{ secrets.WINGET_TOKEN }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CHOCOLATEY_API_KEY: ${{ secrets.CHOCOLATEY_API_KEY }}
-
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
