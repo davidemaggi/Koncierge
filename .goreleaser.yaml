@@ -78,7 +78,7 @@ chocolateys:
     tags: go, cli, kubernetes, tools, k8s
     release_notes: "https://github.com/davidemaggi/Koncierge/releases/tag/v{{ .Version }}"
     api_key: "{{ .Env.CHOCOLATEY_API_KEY }}"
-    skip_publish: true
+    skip_publish: false
 
 
 # Release to Winget
