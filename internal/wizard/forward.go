@@ -68,6 +68,9 @@ func BuildForward() internal.ForwardDto {
 	}
 
 	if ret.ForwardType == internal.ForwardPod {
+		logger.Error("Not Yet Implemented...", nil)
+		os.Exit(1)
+
 		// TODO: get Pod ports
 		//ret.TargetName, _ = pterm.DefaultInteractiveSelect.WithOptions(k8s.GetPodsInNamespace(ret.Namespace)).Show()
 		//ports = k8s.GetServicePorts(ret.Namespace, ret.TargetName)
@@ -91,7 +94,15 @@ func BuildForward() internal.ForwardDto {
 	// Retrieve full object based on name
 	selectedPort := portMap[selectedName]
 
-	ret.TargetPort = selectedPort.PodPort
+	if selectedPort.PodPort == 0 {
+
+		ret.TargetPort = selectedPort.ServicePort
+
+	} else {
+
+		ret.TargetPort = selectedPort.PodPort
+
+	}
 
 	localPortTxt, _ := pterm.DefaultInteractiveTextInput.WithDefaultValue(fmt.Sprintf("%d", ret.TargetPort)).Show()
 

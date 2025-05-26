@@ -19,11 +19,9 @@ func PrintCommandHeader(name string, description string) {
 
 func PrintCurrentStatus(currentConfig string, currentCtx string, currentNs string) {
 
-	var lg = container.App.Logger
-
-	lg.Get().Info("Current KubeConfig: " + pterm.Green(currentConfig))
-	lg.Get().Info("Current Context: " + pterm.Green(currentCtx))
-	lg.Get().Info("Default Namespace: " + pterm.Green(currentNs))
+	pterm.Println("📄 Current KubeConfig: " + pterm.Green(currentConfig))
+	pterm.Println("🗃️ Current Context: " + pterm.Green(currentCtx))
+	pterm.Println("🪪 Default Namespace: " + pterm.Green(currentNs))
 
 }
 
