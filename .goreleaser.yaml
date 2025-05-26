@@ -48,9 +48,64 @@ changelog:
       - "^docs:"
       - "^test:"
 
+
+# Release to GitHub
 release:
   footer: >-
 
     ---
 
     Released by [GoReleaser](https://github.com/goreleaser/goreleaser).
+
+# Release to Choco
+chocolateys:
+  - name: koncierge
+    summary: Your faithful assistant to interact with your Kubernetes cluster
+    description: |
+      Koncierge is here to be your assistant and your guide managing your k8s cluster.
+      You can manage your Contexts, Namespace, Kubeconfigs and port forwards.
+      You are lazy, I'm lazy — let's get lazy together and let Koncierge do the dirty job.
+    package_source_url: https://github.com/davidemaggi/Koncierge
+    owners: Davide Maggi
+    authors: Davide Maggi
+    project_url: https://github.com/davidemaggi/Koncierge
+    icon_url: https://github.com/davidemaggi/Koncierge/blob/81e793b878cc35abc23824eb7d4365c7f8f64165/logo.png?raw=true
+    license_url: https://github.com/davidemaggi/Koncierge/blob/81e793b878cc35abc23824eb7d4365c7f8f64165/LICENSE
+    require_license_acceptance: false
+    project_source_url: https://github.com/davidemaggi/Koncierge
+    docs_url: https://github.com/davidemaggi/Koncierge
+    bug_tracker_url: https://github.com/davidemaggi/Koncierge/issues
+    tags: go, cli, kubernetes, tools, k8s
+    release_notes: "https://github.com/davidemaggi/Koncierge/releases/tag/v{{ .Version }}"
+    api_key: "{{ .Env.CHOCOLATEY_API_KEY }}"
+    skip_publish: true
+
+
+# Release to Winget
+winget:
+  - name: koncierge
+    publisher: Davide Maggi
+    author: Davide Maggi
+    description: Koncierge is here to be your assistant and your guide managing your k8s cluster. You can manage your Contexts, Namespace, Kubeconfigs and port forwards. You are lazy, I'm lazy lets get lazy together and let Koncierge do the dirty job
+    short_description: Your faithful assistant to interact with your Kubernetes cluster
+    license: MIT
+    homepage: https://github.com/davidemaggi/Koncierge
+    repository:
+      owner: davidemaggi
+      name: winget-pkgs
+      token: '{{ .Env.WINGET_TOKEN }}'
+      pull_request:
+        enabled: true
+        draft: true
+        base:
+          owner: microsoft
+          name: winget-pkgs
+          branch: master
+    tags:
+      - go
+      - cli
+      - tools
+      - k8s
+      - kubernetes
+
+    skip_upload: false
