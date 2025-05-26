@@ -22,7 +22,10 @@ As a dev one of the most tedious activities is to find out that a password chang
 	FORWARD_START_DESCRIPTION = `Well, you saved your forwards, here you can start them easily`
 
 	FORWARD_DELETE_SHORT       = "Delete one or more of your saved forwards"
-	FORWARD_DELETE_DESCRIPTION = `There is no better sensation than closing a project, let's remove also some forwards'`
+	FORWARD_DELETE_DESCRIPTION = `There is no better sensation than closing a project, let's remove also some forwards`
+
+	FORWARD_LIST_SHORT       = "List all the known forwards"
+	FORWARD_LIST_DESCRIPTION = `Just in case you forgot about them... leets have a look`
 
 	CONTEXT_SHORT       = "Change the Current Context"
 	CONTEXT_DESCRIPTION = `Here you can change the current ctx for the desired KubeConfig`

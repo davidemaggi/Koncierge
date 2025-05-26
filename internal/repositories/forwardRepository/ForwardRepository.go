@@ -7,7 +7,9 @@ import (
 	"github.com/davidemaggi/koncierge/internal/repositories"
 	"github.com/davidemaggi/koncierge/models"
 	"gorm.io/gorm"
+	"k8s.io/client-go/util/homedir"
 	"os"
+	"path/filepath"
 )
 
 type ForwardRepository interface {
@@ -29,11 +31,16 @@ func (r *GormForwardRepository) CreateFromDto(fwd internal.ForwardDto) {
 	var existingConfig models.KubeConfigEntity
 
 	err := db.GetDB().First(&existingConfig, models.KubeConfigEntity{KubeconfigPath: fwd.KubeconfigPath}).Error
+	defaultFile := ""
+	if home := homedir.HomeDir(); home != "" {
+		defaultFile = filepath.Join(home, ".kube", "config")
+	}
 
 	if err != nil {
 		newKc := &models.KubeConfigEntity{
-			Name:           "",
+			Name:           filepath.Base(fwd.KubeconfigPath),
 			KubeconfigPath: fwd.KubeconfigPath,
+			IsDefault:      fwd.KubeconfigPath == defaultFile,
 		}
 
 		db.GetDB().Create(newKc)
