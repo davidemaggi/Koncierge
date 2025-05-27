@@ -69,13 +69,13 @@ chocolateys:
     owners: Davide Maggi
     authors: Davide Maggi
     project_url: https://github.com/davidemaggi/Koncierge
-    icon_url: https://github.com/davidemaggi/Koncierge/blob/81e793b878cc35abc23824eb7d4365c7f8f64165/logo.png?raw=true
+    icon_url: https://raw.githubusercontent.com/davidemaggi/Koncierge/f20e27c80f963a3e102c9a6f8cb87f6d3d1c1366/logo.png
     license_url: https://github.com/davidemaggi/Koncierge/blob/81e793b878cc35abc23824eb7d4365c7f8f64165/LICENSE
     require_license_acceptance: false
     project_source_url: https://github.com/davidemaggi/Koncierge
-    docs_url: https://github.com/davidemaggi/Koncierge
+    docs_url: https://github.com/davidemaggi/Koncierge/wiki
     bug_tracker_url: https://github.com/davidemaggi/Koncierge/issues
-    tags: go, cli, kubernetes, tools, k8s
+    tags: go cli kubernetes tools k8s
     release_notes: "https://github.com/davidemaggi/Koncierge/releases/tag/v{{ .Version }}"
     api_key: "{{ .Env.CHOCOLATEY_API_KEY }}"
     skip_publish: false
