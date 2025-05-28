@@ -75,7 +75,7 @@ chocolateys:
     project_source_url: https://github.com/davidemaggi/Koncierge
     docs_url: https://github.com/davidemaggi/Koncierge/wiki
     bug_tracker_url: https://github.com/davidemaggi/Koncierge/issues
-    tags: go cli kubernetes tools k8s
+    tags: go cli kubernetes tools k8s cluster port forward namespace context kube
     release_notes: "https://github.com/davidemaggi/Koncierge/releases/tag/v{{ .Version }}"
     api_key: "{{ .Env.CHOCOLATEY_API_KEY }}"
     skip_publish: false
@@ -107,5 +107,10 @@ winget:
       - tools
       - k8s
       - kubernetes
+      - kube
+      - cluster
+      - port forward
+      - context
+      - namespace
 
     skip_upload: false
