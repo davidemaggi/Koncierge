@@ -5,6 +5,7 @@ import (
 	"github.com/davidemaggi/koncierge/models"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 	"log"
 	"sync"
 
@@ -26,7 +27,9 @@ func Init() {
 		db, err = gorm.Open(sqlite.Dialector{
 			DriverName: "sqlite",
 			DSN:        dbFile,
-		}, &gorm.Config{})
+		}, &gorm.Config{
+			Logger: logger.Default.LogMode(logger.Silent),
+		})
 		if err != nil {
 			log.Fatalf("failed to connect to SQLite database: %v", err)
 		}
