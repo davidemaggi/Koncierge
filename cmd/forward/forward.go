@@ -28,6 +28,8 @@ func init() {
 	FwdCmd.AddCommand(FwdStartCmd)
 	FwdCmd.AddCommand(FwdDeleteCmd)
 	FwdCmd.AddCommand(FwdListCmd)
+	FwdCmd.AddCommand(FwdMoveCmd)
+	FwdCmd.AddCommand(FwdCopyCmd)
 
 	// Here you will define your flags and configuration settings.
 

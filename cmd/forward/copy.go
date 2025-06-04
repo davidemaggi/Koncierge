@@ -3,9 +3,11 @@ package forward
 import (
 	"fmt"
 	"github.com/davidemaggi/koncierge/internal"
+	"github.com/davidemaggi/koncierge/internal/config"
 	"github.com/davidemaggi/koncierge/internal/container"
 	"github.com/davidemaggi/koncierge/internal/db"
-	"github.com/davidemaggi/koncierge/internal/repositories"
+	"github.com/davidemaggi/koncierge/internal/k8s"
+	"github.com/davidemaggi/koncierge/internal/repositories/forwardRepository"
 	"github.com/davidemaggi/koncierge/internal/ui"
 	"github.com/davidemaggi/koncierge/internal/wizard"
 	"github.com/davidemaggi/koncierge/models"
@@ -14,30 +16,26 @@ import (
 	"os"
 )
 
-var FwdDeleteCmd = &cobra.Command{
-	Use:     "delete",
-	Aliases: []string{"rm", "del", "remove"},
-	Short:   internal.FORWARD_DELETE_SHORT,
-	Long:    internal.FORWARD_DELETE_DESCRIPTION,
-	Run:     runDelete,
+var FwdCopyCmd = &cobra.Command{
+	Use:     "copy",
+	Aliases: []string{"cp"},
+	Short:   internal.FORWARD_COPY_SHORT,
+	Long:    internal.FORWARD_COPY_DESCRIPTION,
+	Run:     runCopy,
 }
-
-var deleteAll = false
 
 func init() {
 
-	FwdDeleteCmd.Flags().BoolVarP(&deleteAll, "all", "a", false, "If Selected all known forwards will be deleted")
-
 }
 
-func runDelete(cmd *cobra.Command, args []string) {
+func runCopy(cmd *cobra.Command, args []string) {
 	_ = cmd
 	_ = args
 	ui.PrintCommandHeader(internal.FORWARD_DELETE_SHORT, internal.FORWARD_DELETE_DESCRIPTION)
 
 	logger := container.App.Logger
 
-	forwardRepo := repositories.NewGormRepository[models.ForwardEntity](db.GetDB())
+	forwardRepo := forwardRepository.NewForwardRepository(db.GetDB())
 
 	allForwards, err := forwardRepo.GetAll()
 
@@ -54,16 +52,16 @@ func runDelete(cmd *cobra.Command, args []string) {
 
 	}
 
-	var toDelete []models.ForwardEntity
+	var toMove []models.ForwardEntity
 	if deleteAll {
-		toDelete = allForwards
+		toMove = allForwards
 	} else {
 
 		if len(allForwards) == 1 {
-			toDelete = allForwards
+			toMove = allForwards
 		} else {
 
-			selectedForwards, ok := wizard.SelectMany(allForwards, "Select forwards to delete", func(f models.ForwardEntity) string {
+			selectedForwards, ok := wizard.SelectMany(allForwards, "Select forwards to copy", func(f models.ForwardEntity) string {
 				return fmt.Sprintf("%s.%s.%s:%d ➡️ localhost:%d", f.ContextName, f.Namespace, f.TargetName, f.TargetPort, f.LocalPort)
 			})
 
@@ -73,24 +71,30 @@ func runDelete(cmd *cobra.Command, args []string) {
 				os.Exit(0)
 
 			} else {
-				toDelete = selectedForwards
+				toMove = selectedForwards
 			}
 
 		}
 	}
 
-	result, _ := pterm.DefaultInteractiveConfirm.Show("Are you really sure you want to delete these forwards?")
+	kubeService, _ := k8s.ConnectToClusterAndContext(config.KubeConfigFile, config.KubeContext)
+
+	contexts := k8s.GetAllContexts(config.KubeConfigFile)
+	current := kubeService.GetCurrentContextAsString()
+
+	moveToCtx, _ := wizard.SelectOne(contexts, "Select the target ctx", func(f string) string {
+		return fmt.Sprintf("%s", f)
+	}, current)
+
+	result, _ := pterm.DefaultInteractiveConfirm.Show("Are you really sure you want to copy these forwards?")
 
 	if result {
-		for _, dlt := range toDelete {
-			err := forwardRepo.Delete(dlt.ID)
-			if err != nil {
-				logger.Failure("Forward Deletion failed.")
-				logger.Error("Forward Deletion failed.", err)
+		for _, mv := range toMove {
 
-				os.Exit(1)
-			}
+			forwardRepo.CopyToCtx(mv.ID, moveToCtx)
+
 		}
 	}
+	logger.Success("Forwards copied successfully")
 
 }
