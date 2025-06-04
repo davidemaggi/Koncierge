@@ -55,7 +55,7 @@ func (r *GormForwardRepository) CreateFromDto(fwd internal.ForwardDto) {
 
 	var existingForward models.ForwardEntity
 
-	err = db.GetDB().First(&existingForward, models.ForwardEntity{TargetName: fwd.TargetName, TargetPort: fwd.TargetPort, KubeConfigEntityId: existingConfig.ID}).Error
+	err = db.GetDB().First(&existingForward, models.ForwardEntity{ContextName: fwd.ContextName, TargetName: fwd.TargetName, TargetPort: fwd.TargetPort, KubeConfigEntityId: existingConfig.ID}).Error
 
 	newFwd := &models.ForwardEntity{
 		KubeConfigEntityId: existingConfig.ID,
