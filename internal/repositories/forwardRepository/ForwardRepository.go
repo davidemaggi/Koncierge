@@ -15,6 +15,7 @@ import (
 type ForwardRepository interface {
 	repositories.Repository[models.ForwardEntity]
 	CreateFromDto(fwd internal.ForwardDto)
+	MoveToCtx(id uint, moveCtx string)
 }
 
 type GormForwardRepository struct {
@@ -24,6 +25,73 @@ type GormForwardRepository struct {
 func NewForwardRepository(db *gorm.DB) *GormForwardRepository {
 	return &GormForwardRepository{repositories.NewGormRepository[models.ForwardEntity](db)}
 }
+
+func (r *GormForwardRepository) CopyToCtx(ida uint, moveCtx string) {
+	var existingFwd models.ForwardEntity
+	var searchFwd models.ForwardEntity
+	var logger = logger2.NewLogger(true)
+
+	searchFwd.ID = ida
+
+	err := db.GetDB().First(&existingFwd, searchFwd).Error
+
+	if err != nil {
+		logger.Failure("Cannot Find Forward")
+
+		logger.Error("Cannot Find Forward", err)
+		os.Exit(1)
+
+	}
+
+	var addConfigs []models.AdditionalConfigEntity
+
+	for _, config := range existingFwd.AdditionalConfigs {
+		addConfigs = append(addConfigs, models.AdditionalConfigEntity{
+			ForwardEntityId: config.ForwardEntityId,
+			Name:            config.Name,
+			ConfigType:      config.ConfigType,
+			Values:          config.Values,
+		})
+	}
+
+	cp := models.ForwardEntity{
+		KubeConfigEntityId: existingFwd.KubeConfigEntityId,
+		ContextName:        moveCtx,
+		Namespace:          existingFwd.Namespace,
+		ForwardType:        existingFwd.ForwardType,
+		TargetName:         existingFwd.TargetName,
+		TargetPort:         existingFwd.TargetPort,
+		LocalPort:          existingFwd.LocalPort,
+		AdditionalConfigs:  addConfigs,
+	}
+
+	db.GetDB().Create(&cp)
+
+}
+
+func (r *GormForwardRepository) MoveToCtx(ida uint, moveCtx string) {
+	var existingFwd models.ForwardEntity
+	var searchFwd models.ForwardEntity
+	var logger = logger2.NewLogger(true)
+
+	searchFwd.ID = ida
+
+	err := db.GetDB().First(&existingFwd, searchFwd).Error
+
+	if err != nil {
+		logger.Failure("Cannot Find Forward")
+
+		logger.Error("Cannot Find Forward", err)
+		os.Exit(1)
+
+	}
+
+	existingFwd.ContextName = moveCtx
+
+	db.GetDB().Save(existingFwd)
+
+}
+
 func (r *GormForwardRepository) CreateFromDto(fwd internal.ForwardDto) {
 
 	var logger = logger2.NewLogger(true)

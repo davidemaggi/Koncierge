@@ -27,6 +27,12 @@ As a dev one of the most tedious activities is to find out that a password chang
 	FORWARD_LIST_SHORT       = "List all the known forwards"
 	FORWARD_LIST_DESCRIPTION = `Just in case you forgot about them... leets have a look`
 
+	FORWARD_MOVE_SHORT       = "Move some forwards to a different context"
+	FORWARD_MOVE_DESCRIPTION = `Context changed but the services are the same? copy Forwards instead of recreating them`
+
+	FORWARD_COPY_SHORT       = "Copy one or more forwards to a different context"
+	FORWARD_COPY_DESCRIPTION = `Multiple enviroments with the same configuration? Copy the forwards on other contexts`
+
 	CONTEXT_SHORT       = "Change the Current Context"
 	CONTEXT_DESCRIPTION = `Here you can change the current ctx for the desired KubeConfig`
 
