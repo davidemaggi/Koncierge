@@ -68,12 +68,11 @@ func BuildForward() internal.ForwardDto {
 	}
 
 	if ret.ForwardType == internal.ForwardPod {
-		logger.Error("Not Yet Implemented...", nil)
-		os.Exit(1)
 
 		// TODO: get Pod ports
-		//ret.TargetName, _ = pterm.DefaultInteractiveSelect.WithOptions(k8s.GetPodsInNamespace(ret.Namespace)).Show()
-		//ports = k8s.GetServicePorts(ret.Namespace, ret.TargetName)
+		ret.TargetName, _ = pterm.DefaultInteractiveSelect.WithOptions(kubeService.GetPodsInNamespace(ret.Namespace)).Show()
+		ret.PodName = ret.TargetName
+		ports = kubeService.GetPodPorts(ret.Namespace, ret.TargetName)
 	}
 
 	var portOptions []string
