@@ -22,27 +22,41 @@
 | ✏ Documentation  | Access comprehensive docs on [github](https://github.com/davidemaggi/Koncierge/blob/main/README.md) and view practical examples in the [examples section](#-examples). |
 
 ## 🧪 Examples
-
+🚧 _Work In Progress_ 🚧
 ### Context
-
+🚧 _Work In Progress_ 🚧
 ### Namespace
-
+🚧 _Work In Progress_ 🚧
 ### Port-Forward
-
+🚧 _Work In Progress_ 🚧
 ## Install
-
+🚧 _Work In Progress_ 🚧
 ### Windows
-
+🚧 _Work In Progress_ 🚧
 #### Winget
+Koncierge is available as a winget release: [winget-pkgs](https://github.com/microsoft/winget-pkgs/tree/master/manifests/d/DavideMaggi/koncierge)
+```ps
+winget install koncierge
+```
 
 #### Chocolatey
+Koncierge is available as a choco release: [choco](https://community.chocolatey.org/packages/koncierge)
+
+```ps
+choco install koncierge
+```
 
 #### Manual
+It's also possible to install concierge manually:
+1. Download the release for your system from [releases](https://github.com/davidemaggi/Koncierge/releases) page 
+2. Copy the single Koncierge.Exe executable file to any suitable location on your PC
+3. Add the folder in which you copied the executable to your PATH Environment variable
 
 ### MacOs
-
+🚧 _Work In Progress_ 🚧
 #### Manual
-
+🚧 _Work In Progress_ 🚧
 ### Linux
-
+🚧 _Work In Progress_ 🚧
 #### Manual
+🚧 _Work In Progress_ 🚧
