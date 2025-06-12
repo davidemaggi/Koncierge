@@ -103,7 +103,7 @@ func BuildForward() internal.ForwardDto {
 
 	}
 
-	localPortTxt, _ := pterm.DefaultInteractiveTextInput.WithDefaultValue(fmt.Sprintf("%d", ret.TargetPort)).Show()
+	localPortTxt, _ := pterm.DefaultInteractiveTextInput.WithDefaultValue(fmt.Sprintf("%d", ret.TargetPort)).WithDefaultText("Insert the Local Port").Show()
 
 	if val, err := strconv.ParseInt(localPortTxt, 10, 32); err == nil {
 		ret.LocalPort = int32(val)
