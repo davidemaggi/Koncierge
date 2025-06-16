@@ -52,3 +52,8 @@ type ServicePortDto struct {
 	PodPort     int32
 	PodName     string
 }
+
+type ServicePodPortKey struct {
+	ServicePort int32
+	PodPort     int32
+}
