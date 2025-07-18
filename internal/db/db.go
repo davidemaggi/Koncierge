@@ -1,12 +1,14 @@
 package db
 
 import (
+	"fmt"
 	"github.com/davidemaggi/koncierge/internal/utils"
 	"github.com/davidemaggi/koncierge/models"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 	"log"
+	"os"
 	"sync"
 
 	_ "modernc.org/sqlite"
@@ -65,4 +67,26 @@ func GetDB() *gorm.DB {
 		log.Fatal("database not initialized. Call db.Init() first.")
 	}
 	return db
+}
+
+// Reset DB
+
+func Reset() error {
+	if dbFile == "" {
+		return fmt.Errorf("db file path is empty — did you call db.Init()?")
+	}
+
+	// Close DB connection first (optional, but recommended)
+	sqlDB, err := db.DB()
+	if err == nil {
+		_ = sqlDB.Close()
+	}
+
+	// Delete the file
+	err = os.Remove(dbFile)
+	if err != nil {
+		return fmt.Errorf("failed to delete db file '%s': %w", dbFile, err)
+	}
+
+	return nil
 }

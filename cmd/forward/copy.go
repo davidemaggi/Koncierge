@@ -62,7 +62,7 @@ func runCopy(cmd *cobra.Command, args []string) {
 		} else {
 
 			selectedForwards, ok := wizard.SelectMany(allForwards, "Select forwards to copy", func(f models.ForwardEntity) string {
-				return fmt.Sprintf("%s.%s.%s:%d ➡️ localhost:%d", f.ContextName, f.Namespace, f.TargetName, f.TargetPort, f.LocalPort)
+				return fmt.Sprintf("%s.%s.%s:%d ➡️ localhost:%d", f.ContextName, f.Namespace, f.TargetName, f.PrintPortToForward(), f.LocalPort)
 			})
 
 			if !ok || len(selectedForwards) == 0 {

@@ -31,7 +31,7 @@ func (k *KubeService) StartPortForward(fwd internal.ForwardDto) (stopChan chan s
 	dialer := spdy.NewDialer(upgrader, &http.Client{Transport: transport}, "POST", req.URL())
 
 	// Format port mapping
-	portMapping := fmt.Sprintf("%d:%d", fwd.LocalPort, fwd.TargetPort)
+	portMapping := fmt.Sprintf("%d:%d", fwd.LocalPort, fwd.PortForForward())
 
 	stopChan = make(chan struct{}, 1)
 	readyChan = make(chan struct{})

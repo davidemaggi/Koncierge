@@ -60,7 +60,8 @@ func (r *GormForwardRepository) CopyToCtx(ida uint, moveCtx string) {
 		Namespace:          existingFwd.Namespace,
 		ForwardType:        existingFwd.ForwardType,
 		TargetName:         existingFwd.TargetName,
-		TargetPort:         existingFwd.TargetPort,
+		ServicePort:        existingFwd.ServicePort,
+		PodPort:            existingFwd.PodPort,
 		LocalPort:          existingFwd.LocalPort,
 		AdditionalConfigs:  addConfigs,
 	}
@@ -123,7 +124,7 @@ func (r *GormForwardRepository) CreateFromDto(fwd internal.ForwardDto) {
 
 	var existingForward models.ForwardEntity
 
-	err = db.GetDB().First(&existingForward, models.ForwardEntity{ContextName: fwd.ContextName, TargetName: fwd.TargetName, TargetPort: fwd.TargetPort, KubeConfigEntityId: existingConfig.ID}).Error
+	err = db.GetDB().First(&existingForward, models.ForwardEntity{ContextName: fwd.ContextName, TargetName: fwd.TargetName, PodPort: fwd.PodPort, ServicePort: fwd.ServicePort, KubeConfigEntityId: existingConfig.ID}).Error
 
 	newFwd := &models.ForwardEntity{
 		KubeConfigEntityId: existingConfig.ID,
@@ -131,7 +132,8 @@ func (r *GormForwardRepository) CreateFromDto(fwd internal.ForwardDto) {
 		Namespace:          fwd.Namespace,
 		ForwardType:        fwd.ForwardType,
 		TargetName:         fwd.TargetName,
-		TargetPort:         fwd.TargetPort,
+		ServicePort:        fwd.ServicePort,
+		PodPort:            fwd.PodPort,
 		LocalPort:          fwd.LocalPort,
 	}
 
