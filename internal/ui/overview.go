@@ -38,7 +38,7 @@ func PrintForwardOverview(fwd internal.ForwardDto, configs map[string]string) {
 	tableData := pterm.TableData{
 		{"KubeConfig", fwd.KubeconfigPath},
 		{"Context", fwd.ContextName},
-		{"Remote", fmt.Sprintf("%s.%s:%s", pterm.Gray(fwd.Namespace), fwd.TargetName, pterm.Green(fwd.TargetPort))},
+		{"Remote", fmt.Sprintf("%s.%s:%s", pterm.Gray(fwd.Namespace), fwd.TargetName, pterm.Green(fwd.PrintPortToForward()))},
 		{"Local", fmt.Sprintf("localhost:%s", pterm.LightBlue(fwd.LocalPort))},
 	}
 

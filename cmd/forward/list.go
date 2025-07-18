@@ -73,10 +73,15 @@ func runList(cmd *cobra.Command, args []string) {
 
 		}
 		ex := strings.Join(utils.DistinctStrings(extras), " ")
-		tableData1 = append(tableData1, []string{fmt.Sprintf("%d", id+1), forward.KubeConfig.Name, forward.ContextName, forward.Namespace, fmt.Sprintf("%s:%d", forward.TargetName, forward.TargetPort), "➡️", fmt.Sprintf("lohalhost:%d", forward.LocalPort), ex})
+		tableData1 = append(tableData1, []string{fmt.Sprintf("%d", id+1), forward.KubeConfig.Name, forward.ContextName, forward.Namespace, fmt.Sprintf("%s:%d", forward.TargetName, forward.PrintPortToForward()), "➡️", fmt.Sprintf("lohalhost:%d", forward.LocalPort), ex})
 	}
 
 	// Create a table with a header and the defined data, then render it
-	pterm.DefaultTable.WithHasHeader().WithData(tableData1).Render()
+	err = pterm.DefaultTable.WithHasHeader().WithData(tableData1).Render()
+	if err != nil {
+		logger.Failure("Error Rendering table")
+		logger.Error("Error Rendering table", err)
+		os.Exit(1)
+	}
 
 }

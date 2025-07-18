@@ -93,17 +93,10 @@ func BuildForward() internal.ForwardDto {
 	// Retrieve full object based on name
 	selectedPort := portMap[selectedName]
 
-	if selectedPort.PodPort == 0 {
+	ret.ServicePort = selectedPort.ServicePort
+	ret.PodPort = selectedPort.PodPort
 
-		ret.TargetPort = selectedPort.ServicePort
-
-	} else {
-
-		ret.TargetPort = selectedPort.PodPort
-
-	}
-
-	localPortTxt, _ := pterm.DefaultInteractiveTextInput.WithDefaultValue(fmt.Sprintf("%d", ret.TargetPort)).WithDefaultText("Insert the Local Port").Show()
+	localPortTxt, _ := pterm.DefaultInteractiveTextInput.WithDefaultValue(fmt.Sprintf("%d", ret.ServicePort)).WithDefaultText("Insert the Local Port").Show()
 
 	if val, err := strconv.ParseInt(localPortTxt, 10, 32); err == nil {
 		ret.LocalPort = int32(val)

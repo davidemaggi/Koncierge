@@ -69,5 +69,6 @@ func init() {
 	rootCmd.AddCommand(namespace.NsCmd)
 	rootCmd.AddCommand(ctx.CtxCmd)
 	rootCmd.AddCommand(InfoCmd)
+	rootCmd.AddCommand(ResetCmd)
 
 }

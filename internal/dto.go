@@ -11,16 +11,32 @@ type ForwardDto struct {
 	ForwardType       string
 	TargetName        string
 	PodName           string
-	TargetPort        int32
+	ServicePort       int32
+	PodPort           int32
 	LocalPort         int32
 	AdditionalConfigs []AdditionalConfigDto
+}
+
+func (f *ForwardDto) PortForForward() int32 {
+	if f.PodPort != 0 {
+		return f.PodPort
+	}
+	return f.ServicePort
+}
+
+func (f *ForwardDto) PrintPortToForward() int32 {
+	if f.ServicePort != 0 {
+		return f.ServicePort
+	}
+	return f.PodPort
 }
 
 func FromForwardEntity(entity models.ForwardEntity) ForwardDto {
 
 	var ret ForwardDto
 
-	ret.TargetPort = entity.TargetPort
+	ret.ServicePort = entity.ServicePort
+	ret.PodPort = entity.PodPort
 	ret.TargetName = entity.TargetName
 	ret.ForwardType = entity.ForwardType
 	ret.ContextName = entity.ContextName

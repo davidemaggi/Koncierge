@@ -48,34 +48,11 @@ func (k *KubeService) GetServicePorts(namespace string, serviceName string) []in
 		ret = append(ret, tmp)
 	}
 
-	pod, _ := k.GetFirstPodForService(namespace, serviceName)
+	//pod, _ := k.GetFirstPodForService(namespace, serviceName)
 
-	podPorts := k.GetPodPorts(namespace, pod)
+	return ret
 
-	return MergeServicePortDtos(ret, podPorts)
-}
+	//podPorts := k.GetPodPorts(namespace, pod)
 
-func MergeServicePortDtos(a, b []internal.ServicePortDto) []internal.ServicePortDto {
-	seen := make(map[internal.ServicePodPortKey]struct{})
-	var result []internal.ServicePortDto
-
-	// Add elements from first slice
-	for _, dto := range a {
-		k := internal.ServicePodPortKey{dto.ServicePort, dto.PodPort}
-		if _, exists := seen[k]; !exists {
-			seen[k] = struct{}{}
-			result = append(result, dto)
-		}
-	}
-
-	// Add non-duplicate elements from second slice
-	for _, dto := range b {
-		k := internal.ServicePodPortKey{dto.ServicePort, dto.PodPort}
-		if _, exists := seen[k]; !exists {
-			seen[k] = struct{}{}
-			result = append(result, dto)
-		}
-	}
-
-	return result
+	//return MergeServicePortDtos(ret, podPorts)
 }
