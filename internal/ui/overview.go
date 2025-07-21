@@ -38,7 +38,8 @@ func PrintForwardOverview(fwd internal.ForwardDto, configs map[string]string) {
 	tableData := pterm.TableData{
 		{"KubeConfig", fwd.KubeconfigPath},
 		{"Context", fwd.ContextName},
-		{"Remote", fmt.Sprintf("%s.%s:%s", pterm.Gray(fwd.Namespace), fwd.TargetName, pterm.Green(fwd.PrintPortToForward()))},
+		{"Namespace", fwd.Namespace},
+		{"Remote", fmt.Sprintf("%s:%s", fwd.TargetName, pterm.Green(fwd.PrintPortToForward()))},
 		{"Local", fmt.Sprintf("localhost:%s", pterm.LightBlue(fwd.LocalPort))},
 	}
 
@@ -52,8 +53,22 @@ func PrintForwardOverview(fwd internal.ForwardDto, configs map[string]string) {
 			for _, value := range additionalConf.Values {
 
 				tmpStr := additionalConf.Name + "." + value
+				tmpStrName := pterm.Gray(additionalConf.Name+".") + value
+				icon := "🚽"
 
-				tableData = append(tableData, []string{fmt.Sprintf("%s %s", additionalConf.ConfigType, tmpStr), configs[tmpStr]})
+				switch additionalConf.ConfigType {
+				case internal.ConfigTypeSecret:
+					icon = "🔑"
+					break
+				case internal.ConfigTypeMap:
+					icon = "🔧"
+					break
+				default:
+					icon = "🚽"
+					break
+				}
+
+				tableData = append(tableData, []string{fmt.Sprintf("%s %s", icon, tmpStrName), configs[tmpStr]})
 			}
 
 		}

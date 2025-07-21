@@ -27,13 +27,14 @@ func NewForwardRepository(db *gorm.DB) *GormForwardRepository {
 }
 
 func (r *GormForwardRepository) CopyToCtx(ida uint, moveCtx string) {
+
 	var existingFwd models.ForwardEntity
 	var searchFwd models.ForwardEntity
 	var logger = logger2.NewLogger(true)
 
 	searchFwd.ID = ida
 
-	err := db.GetDB().First(&existingFwd, searchFwd).Error
+	err := db.GetDB().Preload("AdditionalConfigs").First(&existingFwd, searchFwd).Error
 
 	if err != nil {
 		logger.Failure("Cannot Find Forward")
@@ -41,17 +42,6 @@ func (r *GormForwardRepository) CopyToCtx(ida uint, moveCtx string) {
 		logger.Error("Cannot Find Forward", err)
 		os.Exit(1)
 
-	}
-
-	var addConfigs []models.AdditionalConfigEntity
-
-	for _, config := range existingFwd.AdditionalConfigs {
-		addConfigs = append(addConfigs, models.AdditionalConfigEntity{
-			ForwardEntityId: config.ForwardEntityId,
-			Name:            config.Name,
-			ConfigType:      config.ConfigType,
-			Values:          config.Values,
-		})
 	}
 
 	cp := models.ForwardEntity{
@@ -63,11 +53,28 @@ func (r *GormForwardRepository) CopyToCtx(ida uint, moveCtx string) {
 		ServicePort:        existingFwd.ServicePort,
 		PodPort:            existingFwd.PodPort,
 		LocalPort:          existingFwd.LocalPort,
-		AdditionalConfigs:  addConfigs,
 	}
 
-	db.GetDB().Create(&cp)
+	if r.Exists(cp) {
+		logger.Attention("The same forward already exists: " + cp.GetAsString())
+		logger.Warn("The same forward already exists")
+		//os.Exit(1)
+	} else {
 
+		db.GetDB().Create(&cp)
+
+		for _, config := range existingFwd.AdditionalConfigs {
+			cpConf := models.AdditionalConfigEntity{
+				ForwardEntityId: cp.ID,
+				Name:            config.Name,
+				ConfigType:      config.ConfigType,
+				Values:          config.Values,
+			}
+			db.GetDB().Create(&cpConf)
+		}
+		logger.Success("Forward Copied Successfully: " + cp.GetAsString())
+
+	}
 }
 
 func (r *GormForwardRepository) MoveToCtx(ida uint, moveCtx string) {
@@ -89,8 +96,16 @@ func (r *GormForwardRepository) MoveToCtx(ida uint, moveCtx string) {
 
 	existingFwd.ContextName = moveCtx
 
-	db.GetDB().Save(existingFwd)
+	if r.Exists(existingFwd) {
+		logger.Attention("The same forward already exists: " + existingFwd.GetAsString())
+		logger.Warn("The same forward already exists")
+		//os.Exit(1)
+	} else {
 
+		db.GetDB().Save(existingFwd)
+		logger.Success("Forward Moved Successfully: " + existingFwd.GetAsString())
+
+	}
 }
 
 func (r *GormForwardRepository) CreateFromDto(fwd internal.ForwardDto) {
@@ -111,7 +126,6 @@ func (r *GormForwardRepository) CreateFromDto(fwd internal.ForwardDto) {
 			KubeconfigPath: fwd.KubeconfigPath,
 			IsDefault:      fwd.KubeconfigPath == defaultFile,
 		}
-
 		db.GetDB().Create(newKc)
 
 		err = db.GetDB().First(&existingConfig, models.KubeConfigEntity{KubeconfigPath: fwd.KubeconfigPath}).Error
@@ -121,10 +135,6 @@ func (r *GormForwardRepository) CreateFromDto(fwd internal.ForwardDto) {
 			os.Exit(1)
 		}
 	}
-
-	var existingForward models.ForwardEntity
-
-	err = db.GetDB().First(&existingForward, models.ForwardEntity{ContextName: fwd.ContextName, TargetName: fwd.TargetName, PodPort: fwd.PodPort, ServicePort: fwd.ServicePort, KubeConfigEntityId: existingConfig.ID}).Error
 
 	newFwd := &models.ForwardEntity{
 		KubeConfigEntityId: existingConfig.ID,
@@ -143,24 +153,39 @@ func (r *GormForwardRepository) CreateFromDto(fwd internal.ForwardDto) {
 		})
 	}
 
-	if err != nil {
-		logger.Info("Creating Forward")
-		err = db.GetDB().Create(newFwd).Error
-
-		if err != nil {
-			logger.Failure("Cannot create Forward")
-
-			logger.Error("Cannot create Forward", err)
-			os.Exit(1)
-
-		} else {
-			logger.Info("Forward created")
-		}
-
-	} else {
-		logger.Attention("The forward entity already exists")
-		logger.Warn("The forward entity already exists")
+	if r.Exists(*newFwd) {
+		logger.Attention("The same forward already exists: " + newFwd.GetAsString())
+		logger.Warn("The same forward already exists")
 		os.Exit(1)
 	}
 
+	logger.Info("Creating Forward")
+	err = db.GetDB().Create(newFwd).Error
+
+	if err != nil {
+		logger.Failure("Cannot create Forward")
+
+		logger.Error("Cannot create Forward", err)
+		os.Exit(1)
+
+	} else {
+		logger.Info("Forward created")
+	}
+
+}
+
+func (r *GormForwardRepository) Exists(entity models.ForwardEntity) bool {
+	var count int64
+
+	db.GetDB().
+		Model(&models.ForwardEntity{}).
+		Where("kube_config_entity_id = ? AND context_name = ? AND target_name = ? AND service_port = ? AND pod_port = ?",
+			entity.KubeConfigEntityId,
+			entity.ContextName,
+			entity.TargetName,
+			entity.ServicePort,
+			entity.PodPort,
+		).Where("id <> ?", entity.ID).Count(&count)
+
+	return count > 0
 }

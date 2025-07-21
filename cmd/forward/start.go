@@ -28,11 +28,12 @@ var FwdStartCmd = &cobra.Command{
 }
 
 var startAll = false
+var fwdIds []int
 
 func init() {
 
 	FwdStartCmd.Flags().BoolVarP(&startAll, "all", "a", false, "If Selected all known forwards will be started")
-
+	FwdStartCmd.Flags().IntSliceVarP(&fwdIds, "number", "n", []int{}, "List of Forward Ids (comma separated)")
 }
 
 func runStart(cmd *cobra.Command, args []string) {
@@ -64,7 +65,12 @@ func runStart(cmd *cobra.Command, args []string) {
 	}
 
 	var toStart []models.ForwardEntity
-	if startAll {
+
+	if len(fwdIds) > 0 {
+
+		toStart = selectByIndices(allForwards, fwdIds)
+
+	} else if startAll {
 		toStart = allForwards
 	} else {
 
@@ -73,7 +79,7 @@ func runStart(cmd *cobra.Command, args []string) {
 		} else {
 
 			selectedForwards, ok := wizard.SelectMany(allForwards, "Select forwards to start", func(f models.ForwardEntity) string {
-				return fmt.Sprintf("%s.%s.%s:%d ➡️ localhost:%d", f.ContextName, f.Namespace, f.TargetName, f.PrintPortToForward(), f.LocalPort)
+				return f.GetAsString()
 			})
 
 			if !ok || len(selectedForwards) == 0 {
@@ -87,7 +93,6 @@ func runStart(cmd *cobra.Command, args []string) {
 
 		}
 	}
-
 	// Create two spinners with their own writers
 
 	for _, tmpFwd := range toStart {
@@ -137,6 +142,16 @@ func runStart(cmd *cobra.Command, args []string) {
 
 	}
 
+}
+
+func selectByIndices[T any](items []T, indices []int) []T {
+	var selected []T
+	for _, idx := range indices {
+		if idx > 0 && idx <= len(items) {
+			selected = append(selected, items[idx-1])
+		}
+	}
+	return selected
 }
 
 func GetValuesForAdditionalConfigs(kubeService *k8s.KubeService, dto internal.ForwardDto) map[string]string {

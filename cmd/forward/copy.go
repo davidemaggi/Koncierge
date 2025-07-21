@@ -52,17 +52,17 @@ func runCopy(cmd *cobra.Command, args []string) {
 
 	}
 
-	var toMove []models.ForwardEntity
+	var toCopy []models.ForwardEntity
 	if deleteAll {
-		toMove = allForwards
+		toCopy = allForwards
 	} else {
 
 		if len(allForwards) == 1 {
-			toMove = allForwards
+			toCopy = allForwards
 		} else {
 
 			selectedForwards, ok := wizard.SelectMany(allForwards, "Select forwards to copy", func(f models.ForwardEntity) string {
-				return fmt.Sprintf("%s.%s.%s:%d ➡️ localhost:%d", f.ContextName, f.Namespace, f.TargetName, f.PrintPortToForward(), f.LocalPort)
+				return f.GetAsString()
 			})
 
 			if !ok || len(selectedForwards) == 0 {
@@ -71,7 +71,7 @@ func runCopy(cmd *cobra.Command, args []string) {
 				os.Exit(0)
 
 			} else {
-				toMove = selectedForwards
+				toCopy = selectedForwards
 			}
 
 		}
@@ -89,12 +89,12 @@ func runCopy(cmd *cobra.Command, args []string) {
 	result, _ := pterm.DefaultInteractiveConfirm.Show("Are you really sure you want to copy these forwards?")
 
 	if result {
-		for _, mv := range toMove {
+		for _, mv := range toCopy {
 
 			forwardRepo.CopyToCtx(mv.ID, moveToCtx)
 
 		}
 	}
-	logger.Success("Forwards copied successfully")
+	logger.Success("Operation Completed!")
 
 }

@@ -30,6 +30,9 @@ As a dev one of the most tedious activities is to find out that a password chang
 	FORWARD_MOVE_SHORT       = "Move some forwards to a different context"
 	FORWARD_MOVE_DESCRIPTION = `Context changed but the services are the same? copy Forwards instead of recreating them`
 
+	FORWARD_EDIT_SHORT       = "Update an existing forward"
+	FORWARD_EDIT_DESCRIPTION = `You regret your life choices? I cannot do much about it but for sure i can help you editing an existing Port Forward`
+
 	FORWARD_COPY_SHORT       = "Copy one or more forwards to a different context"
 	FORWARD_COPY_DESCRIPTION = `Multiple enviroments with the same configuration? Copy the forwards on other contexts`
 
