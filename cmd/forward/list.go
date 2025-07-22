@@ -73,7 +73,7 @@ func runList(cmd *cobra.Command, args []string) {
 
 		}
 		ex := strings.Join(utils.DistinctStrings(extras), " ")
-		tableData1 = append(tableData1, []string{fmt.Sprintf("%d", id+1), forward.KubeConfig.Name, forward.ContextName, forward.Namespace, forward.GetAsString(), ex})
+		tableData1 = append(tableData1, []string{fmt.Sprintf("%d", id+1), forward.KubeConfig.Name, forward.ContextName, forward.Namespace, forward.GetAsShortString(), ex})
 	}
 
 	// Create a table with a header and the defined data, then render it
