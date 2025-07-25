@@ -57,6 +57,6 @@ It's also possible to install concierge manually:
 #### Manual
 🚧 _Work In Progress_ 🚧
 ### Linux
-🚧 _Work In Progress_ 🚧
-#### Manual
-🚧 _Work In Progress_ 🚧
+```sh
+curl https://raw.githubusercontent.com/davidemaggi/Koncierge/master/scripts/install_linux.sh | bash
+```
