@@ -30,3 +30,6 @@ func (f *ForwardEntity) PrintPortToForward() int32 {
 func (f *ForwardEntity) GetAsString() string {
 	return fmt.Sprintf("%s.%s.%s:%d ➡️ localhost:%d", f.ContextName, f.Namespace, f.TargetName, f.PrintPortToForward(), f.LocalPort)
 }
+func (f *ForwardEntity) GetAsShortString() string {
+	return fmt.Sprintf(".%s:%d ➡️ localhost:%d", f.TargetName, f.PrintPortToForward(), f.LocalPort)
+}
