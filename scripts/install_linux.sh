@@ -16,4 +16,4 @@ GITHUB_URL="https://github.com/davidemaggi/Koncierge/releases/download/${GITHUB_
 curl -L -o koncierge.tar.gz $GITHUB_URL
 tar xzvf koncierge.tar.gz koncierge
 install -Dm 755 koncierge -t "$DIR"
-rm Koncierge koncierge.tar.gz
+rm koncierge koncierge.tar.gz
