@@ -16,6 +16,7 @@ before:
     - go generate ./...
 
 builds:
+  - binary: koncierge
   - env:
       - CGO_ENABLED=0
     goos:
