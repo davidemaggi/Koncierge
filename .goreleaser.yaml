@@ -16,7 +16,6 @@ before:
     - go generate ./...
 
 builds:
-  - binary: koncierge
   - env:
       - CGO_ENABLED=0
     goos:
@@ -25,6 +24,7 @@ builds:
       - darwin
     ldflags:
       - "-X github.com/davidemaggi/koncierge/internal/version.v={{ .Version }}"
+    binary: koncierge
 
 
 archives:
