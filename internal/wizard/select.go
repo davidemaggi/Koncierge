@@ -24,6 +24,7 @@ func SelectOne[T any](items []T, label string, getKey func(T) string, current st
 		WithOptions(options).
 		WithDefaultOption(current).
 		WithDefaultText(label).
+		WithMaxHeight(25).
 		Show()
 
 	if err != nil {
